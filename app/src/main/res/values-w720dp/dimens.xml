@@ -1,0 +1,12 @@
+<resources>
+
+    <dimen name="width">700dp</dimen>
+    <dimen name="image_width">350dp</dimen>
+    <dimen name="image_width_2">175dp</dimen>
+    <dimen name="button_width">111dp</dimen>
+    <dimen name="button_width2">101dp</dimen>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="activity_horizontal_margin">10dp</dimen>
+    <dimen name="activity_vertical_margin">10dp</dimen>
+
+</resources>

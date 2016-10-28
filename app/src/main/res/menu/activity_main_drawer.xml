@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="single" >
+        <item
+            android:id="@+id/nav_programacion"
+            android:icon="@drawable/ic_home_black"
+            android:title="Programacion"
+            android:checked="true" />
+        <item
+            android:id="@+id/nav_letras"
+            android:icon="@drawable/ic_format_color_text_black"
+            android:title="Letras" />
+        <item
+            android:id="@+id/nav_generos"
+            android:icon="@drawable/ic_list_black"
+            android:title="Generos" />
+        <item
+            android:id="@+id/nav_favoritos"
+            android:icon="@drawable/ic_star_black"
+            android:title="Favoritos" />
+        <item
+            android:id="@+id/nav_vistos"
+            android:icon="@drawable/ic_done_black_48dp"
+            android:title="Vistos" />
+        <item
+            android:id="@+id/nav_historial"
+            android:icon="@drawable/ic_list_black_48dp"
+            android:title="Historial" />
+    </group>
+
+    <item android:title="Descargas">
+        <menu>
+            <item
+                android:id="@+id/nav_admin_descargas"
+                android:icon="@drawable/ic_file_download"
+                android:title="Administrador" />
+            <item
+                android:id="@+id/nav_descargas"
+                android:icon="@drawable/ic_movie_black"
+                android:title="Descargas" />
+        </menu>
+    </item>
+    
+    <item android:title="Otros">
+        <menu>
+           
+            <item
+                android:id="@+id/nav_configuracion"
+                android:icon="@drawable/ic_settings_black"
+                android:title="Configuracion" />
+            <item
+                android:id="@+id/nav_cerrar_sesion"
+                android:icon="@drawable/ic_exit_to_app_black"
+                android:title="Cerrar Sesión" />
+            <item
+                android:id="@+id/nav_salir"
+                android:icon="@drawable/ic_exit_to_app_black"
+                android:title="Salir" />
+        </menu>
+    </item>
+</menu>

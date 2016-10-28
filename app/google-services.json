@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "259726514870",
+    "firebase_url": "https://animefinderapp-3ab06.firebaseio.com",
+    "project_id": "animefinderapp-3ab06",
+    "storage_bucket": "animefinderapp-3ab06.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259726514870:android:7d209c9d83aed0cc",
+        "android_client_info": {
+          "package_name": "com.animefinderapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259726514870-a4fb34bcg63q7rhtt7ftlf5g3t54upa8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.animefinderapp",
+            "certificate_hash": "D232CEE437D0E00B67C82543D6C0A92B3A3ED2ED"
+          }
+        },
+        {
+          "client_id": "259726514870-5n1m6aqnth8nhgcf17j6vj9mq5nje20i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB88jjFW-fIOwM5-fPLfyxOJLf6zTgqlT8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259726514870-5n1m6aqnth8nhgcf17j6vj9mq5nje20i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

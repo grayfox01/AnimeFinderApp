@@ -1,0 +1,18 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item name="ic_more_vert_black" type="drawable">@drawable/ic_more_vert_black_48dp</item>
+    <item name="ic_arrow_back_black" type="drawable">@drawable/ic_arrow_back_black_48dp</item>
+    <item name="ic_exit_to_app_black" type="drawable">@drawable/ic_exit_to_app_black_48dp</item>
+    <item name="ic_file_download" type="drawable">@drawable/ic_file_download_black_48dp</item>
+    <item name="ic_folder_black" type="drawable">@drawable/ic_folder_open_black_48dp</item>
+    <item name="ic_folder_open_black" type="drawable">@drawable/ic_folder_open_black_48dp</item>
+    <item name="ic_format_color_text_black" type="drawable">@drawable/ic_format_color_text_black_48dp</item>
+    <item name="ic_home_black" type="drawable">@drawable/ic_home_black_48dp</item>
+    <item name="ic_list_black" type="drawable">@drawable/ic_list_black_48dp</item>
+    <item name="ic_movie_black" type="drawable">@drawable/ic_movie_black_48dp</item>
+    <item name="ic_play_circle_outline_black" type="drawable">@drawable/ic_play_circle_outline_black_48dp</item>
+    <item name="ic_settings_black" type="drawable">@drawable/ic_settings_black_48dp</item>
+    <item name="ic_star_black" type="drawable">@drawable/ic_star_black_48dp</item>
+    <item name="ic_star_border_black" type="drawable">@drawable/ic_star_border_black_48dp</item>
+    <item name="loadimage" type="drawable">@drawable/loadimage</item>
+
+</resources>

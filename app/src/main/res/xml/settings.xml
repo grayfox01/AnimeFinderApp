@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <PreferenceCategory android:title="@string/pref_server" >
+        <ListPreference
+            android:entries="@array/pref_server_entradas"
+            android:entryValues="@array/pref_server_valores"
+            android:key="pref_servidor"
+            android:defaultValue="AnimeFlv"
+            android:summary="@string/pref_server_resumen"
+            android:title="@string/pref_server_titulo" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_list_view" >
+        <ListPreference
+            android:entries="@array/pref_list_view_entradas"
+            android:entryValues="@array/pref_list_view_valores"
+            android:key="pref_list_view"
+            android:defaultValue="Lista"
+            android:summary="@string/pref_list_view_resumen"
+            android:title="@string/pref_list_view_titulo" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Notificaciones" >
+        <CheckBoxPreference
+            android:key="notificarcheckbox"
+            android:defaultValue="false"
+            android:summary="Notificar Capitulos Nuevos"
+            android:title="Notificaciones" />
+
+        <ListPreference
+            android:entries="@array/pref_list_notificacion_entradas"
+            android:entryValues="@array/pref_list_notificacion_valores"
+            android:key="pref_list_notificaciones"
+            android:summary="Tipos de notificaciones"
+            android:defaultValue="programacion"
+            android:title="Tipos" />
+    </PreferenceCategory>
+</PreferenceScreen>

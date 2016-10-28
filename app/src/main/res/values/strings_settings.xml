@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_activity_settings">Configuración</string>
+    <string name="pref_server_titulo">Servidor Predeterminado</string>
+    <string name="pref_list_view_titulo">Tipo de lista</string>
+
+    <string-array name="pref_server_entradas">
+        <item>AnimeFlv.net</item>
+        <item>AnimeID.tv</item>
+        <item>Jkanime.net</item>
+        <item>ReyAnime.com</item>
+        <item>Jkanime.co</item>
+    </string-array>
+    <string-array name="pref_server_valores">
+        <item>AnimeFlv</item>
+        <item>AnimeID</item>
+        <item>Jkanime</item>
+        <item>ReyAnime</item>
+        <item>Jkanimeco</item>
+    </string-array>
+    <string-array name="pref_list_view_entradas">
+        <item>Lista</item>
+        <item>Grilla</item>
+    </string-array>
+    <string-array name="pref_list_view_valores">
+        <item>lista</item>
+        <item>grid</item>
+    </string-array>
+    <string-array name="pref_list_notificacion_entradas">
+        <item>Favoritos</item>
+        <item>Programacion</item>
+    </string-array>
+    <string-array name="pref_list_notificacion_valores">
+        <item>favoritos</item>
+        <item>programacion</item>
+    </string-array>
+
+    <string name="pref_server_resumen">Servidor usado por la aplicacion</string>
+    <string name="pref_server">Servidores</string>
+    <string name="pref_list_view_resumen">Estilo usado por la aplicacion</string>
+    <string name="pref_list_view">Estilos</string>
+
+</resources>

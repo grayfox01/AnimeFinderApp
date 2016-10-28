@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:elevation="5dp"
+    app:cardBackgroundColor="@color/material_grey_100"
+    app:cardCornerRadius="10dp" >
+
+    <RelativeLayout
+        android:layout_width="@dimen/width"
+        android:layout_height="@dimen/image_width" >
+
+        <RelativeLayout
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width" >
+
+            <ImageView
+                android:id="@+id/imagenProgramacion"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" >
+
+            <TextView
+                android:id="@+id/tituloProgramacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="top|left"
+                android:maxLines="3"
+                android:padding="5dp"
+                android:text="Titulo"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/capitulosProgramacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:text="Episodio"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Button
+                    android:id="@+id/animeProgramacion"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="@dimen/button_width"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/ic_folder_black" />
+
+                <Button
+                    android:id="@+id/verProgramacion"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="@dimen/button_width"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@+id/animeProgramacion"
+                    android:background="@drawable/ic_play_circle_outline_black" />
+
+                <Button
+                    android:id="@+id/descargarProgramacion"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="@dimen/button_width"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/animeProgramacion"
+                    android:background="@drawable/ic_file_download" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
