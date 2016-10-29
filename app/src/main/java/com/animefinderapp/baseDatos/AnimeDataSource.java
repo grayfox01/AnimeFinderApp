@@ -9,6 +9,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
 import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.entidades.AnimeFavorito;
 import com.animefinderapp.entidades.Capitulo;
@@ -20,6 +21,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -39,11 +41,7 @@ public class AnimeDataSource implements Serializable {
     private static final String STRING_TYPE = "text";
     private static final String INT_TYPE = "integer";
 
-    private AnimeDbHelper openHelper;
-    private SQLiteDatabase database;
-
-    public AnimeDataSource(Context context) {
-        openHelper = new AnimeDbHelper(context);
+    public AnimeDataSource() {
     }
 
     // Campos de la tabla Quotes
@@ -115,7 +113,9 @@ public class AnimeDataSource implements Serializable {
                 + "PRIMARY KEY (" + TABLA_CAPITULOS_VISTOS.URL_ANIME + "," + TABLA_CAPITULOS_VISTOS.CAPITULO + "))";
     }
 
-    public void agregarFavorito(AnimeFavorito favorito, String servidor) {
+    public void agregarFavorito(AnimeFavorito favorito, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -132,15 +132,16 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
-        } // Nuestro contenedor de valores
+            database.close();
+        } 
 
     }
 
-    public static void uploadDB(Context c) {
+    public static void uploadDB(Context context) {
         try {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
-            ContextWrapper cw = new ContextWrapper(c);
+            ContextWrapper cw = new ContextWrapper(context);
             Uri file = Uri.fromFile(cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME));
             StorageReference dbRef = storageRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("database/" + file.getLastPathSegment());
             UploadTask uploadTask = dbRef.putFile(file);
@@ -163,14 +164,14 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public static void downloadDB(Context c) {
+    public static void downloadDB(Context context) {
         try {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
             StorageReference userRef = storageRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("database").child(AnimeDbHelper.DATABASE_NAME);
             userRef.getPath().equals(userRef.getPath());
-            final ContextWrapper cw = new ContextWrapper(c);
-            final File localFile = File.createTempFile("datoTmp","db");
+            final ContextWrapper cw = new ContextWrapper(context);
+            final File localFile = File.createTempFile("datoTmp", "db");
             userRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -200,7 +201,9 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public void agregarAnimeVisto(AnimeFavorito favorito, String servidor) {
+    public void agregarAnimeVisto(AnimeFavorito favorito, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -211,17 +214,20 @@ public class AnimeDataSource implements Serializable {
             ;
             // Insertando en la base de datos
             database.insert(servidor + ANIMES_VISTOS_TABLE_NAME, null, values);
-
             database.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             database.endTransaction();
-        } // Nuestro contenedor de valores
+            database.close();
+            database.close();
+        } 
 
     }
 
-    public void agregarHistorial(Capitulo capitulo, String servidor) {
+    public void agregarHistorial(Capitulo capitulo, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -240,11 +246,14 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
-        } // Nuestro contenedor de valores
+            database.close();
+        } 
 
     }
 
-    public void agregarNotificacion(Capitulo capitulo, String servidor) {
+    public void agregarNotificacion(Capitulo capitulo, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -258,10 +267,13 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
-        } // Nuestro contenedor de valores
+            database.close();
+        } 
     }
 
-    public void editarNotificacion(Capitulo capitulo, String servidor) {
+    public void editarNotificacion(Capitulo capitulo, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -274,10 +286,13 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
-        } // Nuestro contenedor de valores
+            database.close();
+        } 
     }
 
-    public void editarFavorito(AnimeFavorito favorito, String servidor) {
+    public void editarFavorito(AnimeFavorito favorito, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -291,13 +306,16 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
-        } // Nuestro contenedor de valores
+            database.close();
+        } 
     }
 
-    public void agregarCapitulo(String servidor, String url, String capitulo) {
+    public void agregarCapitulo(String servidor, String url, String capitulo, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
-            // Nuestro contenedor de valores
+            
             ContentValues values = new ContentValues();
             values.put(AnimeDataSource.TABLA_CAPITULOS_VISTOS.URL_ANIME, url);
             values.put(AnimeDataSource.TABLA_CAPITULOS_VISTOS.CAPITULO, capitulo);// Insertando
@@ -308,11 +326,14 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
 
     }
 
-    public void eliminarFavorito(AnimeFavorito favorito, String servidor) {
+    public void eliminarFavorito(AnimeFavorito favorito, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             String selection = TABLA_FAVORITOS.URL_ANIME + " = ?";
@@ -323,10 +344,13 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
     }
 
-    public void eliminarCapitulosVistos(AnimeFavorito favorito, String servidor) {
+    public void eliminarCapitulosVistos(AnimeFavorito favorito, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             String selection = TABLA_CAPITULOS_VISTOS.URL_ANIME + " = ?";
@@ -337,10 +361,13 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
     }
 
-    public void eliminarCapitulo(String servidor, String url, String capitulo) {
+    public void eliminarCapitulo(String servidor, String url, String capitulo, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
 
@@ -353,10 +380,13 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
     }
 
-    public void eliminarAnimeVisto(AnimeFavorito favorito, String servidor) {
+    public void eliminarAnimeVisto(AnimeFavorito favorito, String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             String selection = TABLA_ANIMES_VISTOS.URL_ANIME + " = ?";
@@ -367,10 +397,13 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
     }
 
-    public boolean vaciarHistorial(String servidor) {
+    public static boolean vaciarHistorial(String servidor, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         try {
             boolean vaciar = database.delete(servidor + HISTORIAL_TABLE_NAME, "1", null) > 0;
             return vaciar;
@@ -380,7 +413,9 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public String getAllNotificacion(String server) {
+    public static String getAllNotificacion(String server, Context context) {
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         String url = null;
         try {
@@ -396,16 +431,19 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
 
         return url;
 
     }
 
-    public ArrayList<AnimeFavorito> getAllFavoritos(String server) {
+    public static ArrayList<AnimeFavorito> getAllFavoritos(String server, Context context) {
         ArrayList<AnimeFavorito> arrayList = new ArrayList<>();
         AnimeFavorito favorito;
         Anime anime;
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             Cursor c = database.rawQuery("select * from " + server + FAVORITOS_TABLE_NAME, null);
@@ -425,16 +463,19 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
 
         return arrayList;
 
     }
 
-    public ArrayList<AnimeFavorito> getAllAnimeVisto(String server) {
+    public static ArrayList<AnimeFavorito> getAllAnimeVisto(String server, Context context) {
         ArrayList<AnimeFavorito> arrayList = new ArrayList<>();
         AnimeFavorito favorito;
         Anime anime;
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             Cursor c = database.rawQuery("select * from " + server + ANIMES_VISTOS_TABLE_NAME, null);
@@ -453,6 +494,7 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
         Collections.sort(arrayList, new Comparator<AnimeFavorito>() {
             @Override
@@ -465,9 +507,11 @@ public class AnimeDataSource implements Serializable {
 
     }
 
-    public ArrayList<Capitulo> getHistorial(String server) {
+    public static ArrayList<Capitulo> getHistorial(String server, Context context) {
 
         final ArrayList<Capitulo> arrayList = new ArrayList<>();
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             Cursor c = database.rawQuery("select * from " + server + HISTORIAL_TABLE_NAME, null);
@@ -486,15 +530,18 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
         Collections.reverse(arrayList);
         return arrayList;
 
     }
 
-    public ArrayList<String> getAllCapitulosVistos(String server, String url) {
+    public static ArrayList<String> getAllCapitulosVistos(String server, String url, Context context) {
 
         ArrayList<String> arrayList = new ArrayList<>();
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             Cursor c = database.rawQuery("select * from " + server + CAPITULOS_VISTOS_TABLE_NAME + " where "
@@ -509,14 +556,17 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
         return arrayList;
 
     }
 
-    public boolean isFavorito(String url, String server) {
+    public static boolean isFavorito(String url, String server, Context context) {
         boolean b = false;
         Cursor c = null;
+        AnimeDbHelper openHelper = new AnimeDbHelper(context);
+        SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
             String columns[] = new String[]{TABLA_FAVORITOS.URL_ANIME};
@@ -530,6 +580,7 @@ public class AnimeDataSource implements Serializable {
             e.printStackTrace();
         } finally {
             database.endTransaction();
+            database.close();
         }
         return b;
     }
@@ -538,8 +589,8 @@ public class AnimeDataSource implements Serializable {
 
 
     @SuppressWarnings("resource")
-    public boolean exportDB(Context c) {
-        ContextWrapper cw = new ContextWrapper(c);
+    public static boolean exportDB(Context context) {
+        ContextWrapper cw = new ContextWrapper(context);
         FileChannel source = null;
         FileChannel destination = null;
         String backupPath = Environment.getExternalStorageDirectory().toString() + "/Anime/Backups";
@@ -559,8 +610,8 @@ public class AnimeDataSource implements Serializable {
     }
 
     @SuppressWarnings("resource")
-    public boolean importDB(Context c) {
-        ContextWrapper cw = new ContextWrapper(c);
+    public static boolean importDB(Context context) {
+        ContextWrapper cw = new ContextWrapper(context);
         FileChannel source = null;
         FileChannel destination = null;
         String backupPath = Environment.getExternalStorageDirectory().toString() + "/Anime/Backups";
@@ -580,9 +631,9 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public static boolean deleteDB(Context c) {
+    public static boolean deleteDB(Context context) {
         try {
-            ContextWrapper cw = new ContextWrapper(c);
+            ContextWrapper cw = new ContextWrapper(context);
             File currentDB = cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME);
             return SQLiteDatabase.deleteDatabase(currentDB);
         } catch (Exception e) {
@@ -591,12 +642,4 @@ public class AnimeDataSource implements Serializable {
         }
 
     }
-    
-    public void open(){
-        database = openHelper.getWritableDatabase();
-    }
-    public void close(){
-        database.close();
-    }
-
 }
