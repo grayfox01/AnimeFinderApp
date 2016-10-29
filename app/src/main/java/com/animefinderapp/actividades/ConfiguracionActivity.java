@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 public class ConfiguracionActivity extends AppCompatActivity {
-    private AnimeDataSource source;
     private Toolbar toolbar;
 
     private Configuracion configuracion;
@@ -19,13 +18,9 @@ public class ConfiguracionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuracion);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        source = new AnimeDataSource(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Bundle args = new Bundle();
-        args.putSerializable("source", source);
         configuracion = new Configuracion();
-        configuracion.setArguments(args);
         getFragmentManager().beginTransaction().replace(R.id.contenido, configuracion).commit();
     }
 
@@ -53,25 +48,21 @@ public class ConfiguracionActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        source.open();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        source.close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        source.open();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        source.close();
     }
 
 }

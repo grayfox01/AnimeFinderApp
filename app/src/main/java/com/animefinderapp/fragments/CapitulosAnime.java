@@ -29,7 +29,6 @@ public class CapitulosAnime extends Fragment {
     private SharedPreferences sharedPref;
     private RecyclerView capitulos;
     private CapitulosAdapter adapter;
-    private AnimeDataSource source;
     private RelativeLayout capitulosl;
     private FloatingActionButton buttonSubirBajar;
     private LinearLayoutManager layoutManager;
@@ -52,8 +51,7 @@ public class CapitulosAnime extends Fragment {
             context = getActivity();
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-            source = (AnimeDataSource) getArguments().get("source");
-            adapter = new CapitulosAdapter(context, source, R.layout.lista_capitulos_row, new ArrayList<Capitulo>(), server);
+            adapter = new CapitulosAdapter(context, R.layout.lista_capitulos_row, new ArrayList<Capitulo>(), server);
             layoutManager = new LinearLayoutManager(context);
             buttonSubirBajar = (FloatingActionButton) view.findViewById(R.id.buttonFloating);
             capitulosl = (RelativeLayout) view.findViewById(R.id.capitulosAnime);

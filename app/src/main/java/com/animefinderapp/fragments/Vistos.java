@@ -3,6 +3,7 @@ package com.animefinderapp.fragments;
 import com.animefinderapp.R;
 import com.animefinderapp.adaptadores.AnimeAdapter2;
 import com.animefinderapp.baseDatos.AnimeDataSource;
+import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.utilidad.ServidorUtil;
 
 import android.content.Context;
@@ -26,9 +27,7 @@ public class Vistos extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private AnimeAdapter2 vistosAdapter;
     private RecyclerView recyclerView;
-    private AnimeDataSource source;
     private TextView totalVistos;
-    private boolean mostrarVistos;
     private Context context;
 
     public Vistos() {
@@ -45,13 +44,12 @@ public class Vistos extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getActivity();
-            source = (AnimeDataSource) getArguments().get("source");
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
-            vistosAdapter = ServidorUtil.getAnimeAdapter2(tipoLista, source, server, false, mostrarVistos, context);
+            vistosAdapter = ServidorUtil.getAnimeAdapter2(tipoLista, server, context);
             totalVistos = (TextView) view.findViewById(R.id.totalVistos);
             recyclerView = (RecyclerView) view.findViewById(R.id.vistos);
             recyclerView.setHasFixedSize(true);
@@ -62,7 +60,7 @@ public class Vistos extends Fragment {
                 @Override
                 public void onRefresh() {
                     vistosAdapter.removeAll();
-                    vistosAdapter.addAll(source.getAllAnimeVisto(server));
+                    vistosAdapter.addAll(AnimeDataSource.getAllAnimeVisto(server,context));
                     if (vistosAdapter.getItemCount() == 0) {
                         totalVistos.setVisibility(TextView.GONE);
                     } else {
@@ -73,7 +71,7 @@ public class Vistos extends Fragment {
                 }
             });
             vistosAdapter.removeAll();
-            vistosAdapter.addAll(source.getAllAnimeVisto(server));
+            vistosAdapter.addAll(AnimeDataSource.getAllAnimeVisto(server,context));
             if (vistosAdapter.getItemCount() == 0) {
                 totalVistos.setVisibility(TextView.GONE);
             } else {
@@ -99,5 +97,4 @@ public class Vistos extends Fragment {
         }
         super.onViewCreated(view, savedInstanceState);
     }
-
 }

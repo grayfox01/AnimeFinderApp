@@ -24,8 +24,6 @@ public class Favoritos extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private AnimeAdapter favoritoAdapter;
     private RecyclerView recyclerView;
-    private AnimeDataSource source;
-    private boolean mostrarVistos;
     private Context context;
 
     public Favoritos() {
@@ -41,14 +39,12 @@ public class Favoritos extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context= getActivity();
-            source = (AnimeDataSource) getArguments().get("source");
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-            mostrarVistos = sharedPref.getBoolean("mostrarVistos", true);
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
-            favoritoAdapter = ServidorUtil.getAnimeAdapter(tipoLista,source, server, false, mostrarVistos, context);
+            favoritoAdapter = ServidorUtil.getAnimeAdapter(tipoLista,server, context);
             recyclerView = (RecyclerView) view.findViewById(R.id.favoritos);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(ServidorUtil.getlayout(tipoLista, context));
@@ -58,12 +54,12 @@ public class Favoritos extends Fragment {
                 @Override
                 public void onRefresh() {
                     favoritoAdapter.removeAll();
-                    favoritoAdapter.addAll(source.getAllFavoritos(server));
+                    favoritoAdapter.addAll(AnimeDataSource.getAllFavoritos(server,context));
                     swipeRefreshLayout.setRefreshing(false);
                 }
             });
             favoritoAdapter.removeAll();
-            favoritoAdapter.addAll(source.getAllFavoritos(server));
+            favoritoAdapter.addAll(AnimeDataSource.getAllFavoritos(server,context));
         } catch (Exception e) {
             ServidorUtil.showMensageError(e, getView());
         }

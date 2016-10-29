@@ -40,9 +40,7 @@ public class Letras extends Fragment {
     private String letraSeleccionada;
     private int pagina;
     private boolean end;
-    private boolean mostrarVistos;
     private boolean refreshing = false;
-    private AnimeDataSource source;
     private Context context;
 
     public Letras() {
@@ -61,7 +59,6 @@ public class Letras extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         try {
             context= getActivity();
-            source = (AnimeDataSource) getArguments().get("source");
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
@@ -71,7 +68,6 @@ public class Letras extends Fragment {
                 Snackbar.make(view, "Servicio Iniciado", Snackbar.LENGTH_SHORT).show();
             }
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
-            mostrarVistos = sharedPref.getBoolean("mostrarVistos", true);
             swipeRefreshLayoutLetras = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
             letrasAdapter = new LetrasAdapter(R.layout.lista_letras_generos_row_list, new ArrayList<String>());
             recyclerViewLetras = (RecyclerView) view.findViewById(R.id.letras);
@@ -108,7 +104,7 @@ public class Letras extends Fragment {
             pagina = 1;
             end = false;
             ((AppCompatActivity) context).getSupportActionBar().setTitle("Letra:" + letraSeleccionada);
-            animeLetraAdapter = ServidorUtil.getAnimeAdapter(tipoLista,source, server, true, mostrarVistos, context);
+            animeLetraAdapter = ServidorUtil.getAnimeAdapter(tipoLista, server, context);
             animeLetraAdapter.removeAll();
             recyclerViewLetras.setAdapter(animeLetraAdapter);
             swipeRefreshLayoutLetras.setOnRefreshListener(new OnRefreshListener() {

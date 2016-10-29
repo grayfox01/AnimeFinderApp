@@ -29,14 +29,12 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 	private Context context;
 	private ArrayList<AnimeFavorito> listaAnimes;
 	private int resourse;
-	private AnimeDataSource source;
 	private String server;
 
-	public AnimeAdapter(Context context, AnimeDataSource source, int resource, ArrayList<AnimeFavorito> listaAnimes, String server) {
+	public AnimeAdapter(Context context, int resource, ArrayList<AnimeFavorito> listaAnimes, String server) {
 		this.context = context;
 		this.resourse = resource;
 		this.listaAnimes = listaAnimes;
-		this.source = source;
 		this.server = server;
 	}
 
@@ -60,7 +58,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 				.diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.loadimage)
 				.bitmapTransform(new CropSquareTransformationGlide(context)).into(viewHolder.imagen);
 
-		if (source.getAllAnimeVisto(server).contains(listaAnimes.get(posicion))) {
+		if (AnimeDataSource.getAllAnimeVisto(server,context).contains(listaAnimes.get(posicion))) {
 			viewHolder.visto.setVisibility(ImageView.VISIBLE);
 		} else {
 			viewHolder.visto.setVisibility(ImageView.GONE);
@@ -85,12 +83,12 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 
 			@Override
 			public boolean onLongClick(View v) {
-				if (!source.getAllAnimeVisto(server).contains(listaAnimes.get(posicion))) {
-					source.agregarAnimeVisto(listaAnimes.get(posicion), server);
+				if (!AnimeDataSource.getAllAnimeVisto(server,context).contains(listaAnimes.get(posicion))) {
+					AnimeDataSource.agregarAnimeVisto(listaAnimes.get(posicion), server,context);
 					Snackbar.make(v, "Anime Agregado", Snackbar.LENGTH_SHORT).show();
 					notifyItemChanged(posicion);
 				} else {
-					source.eliminarAnimeVisto(listaAnimes.get(posicion), server);
+					AnimeDataSource.eliminarAnimeVisto(listaAnimes.get(posicion), server,context);
 					Snackbar.make(v, "Anime Eliminado", Snackbar.LENGTH_SHORT).show();
 					notifyItemChanged(posicion);
 

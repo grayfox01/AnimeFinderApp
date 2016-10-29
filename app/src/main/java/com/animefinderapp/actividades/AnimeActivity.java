@@ -36,7 +36,6 @@ import android.widget.TextView;
 public class AnimeActivity extends AppCompatActivity {
     private AnimeFavorito animeFavorito;
     private String server;
-    private AnimeDataSource source;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
@@ -52,18 +51,12 @@ public class AnimeActivity extends AppCompatActivity {
         url = getIntent().getExtras().getString("url");
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-        source = new AnimeDataSource(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().hide();
-        animeFavorito = new AnimeFavorito();
-        Bundle args = new Bundle();
-        args.putSerializable("source", source);
         infoFragment = new InfoAnime();
-        infoFragment.setArguments(args);
         capitulosFragment = new CapitulosAnime();
-        capitulosFragment.setArguments(args);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager, new Anime());
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -208,8 +201,8 @@ public class AnimeActivity extends AppCompatActivity {
                 infoFragment.addRelacionados(relacionadosl);
                 AnimeFavorito a = new AnimeFavorito(anime, null);
                 animeFavorito = a;
-                infoFragment.setFavorito(source.getAllFavoritos(server).contains(a));
-                infoFragment.setVisto(source.getAllAnimeVisto(server).contains(a));
+                infoFragment.setFavorito(AnimeDataSource.getAllFavoritos(server, AnimeActivity.this).contains(a));
+                infoFragment.setVisto(AnimeDataSource.getAllFavoritos(server, AnimeActivity.this).contains(a));
                 capitulosFragment.addCapitulos(anime.getCapitulos());
                 infoFragment.show();
                 getSupportActionBar().show();
@@ -226,24 +219,20 @@ public class AnimeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        source.open();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        source.close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        source.open();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        source.close();
     }
 }

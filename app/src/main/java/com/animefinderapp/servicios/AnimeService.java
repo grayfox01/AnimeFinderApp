@@ -62,8 +62,7 @@ public class AnimeService extends Service {
 
 	private void displayNotification(ArrayList<Capitulo> lista) {
 		try {
-			AnimeDataSource source = new AnimeDataSource(AnimeService.this);
-			ArrayList<AnimeFavorito> listafavoritos = source.getAllFavoritos(servidor);
+			ArrayList<AnimeFavorito> listafavoritos = AnimeDataSource.getAllFavoritos(servidor,this);
 			if (notificaciones.equals("favoritos")) {
 
 				for (Capitulo capitulo : lista) {
@@ -75,18 +74,18 @@ public class AnimeService extends Service {
 						if (!favorito.getCapituloNotificado().equals(capitulo)) {
 							mostrarNotification(capitulo);
 							favorito.setCapituloNotificado(capitulo);
-							source.editarFavorito(favorito, servidor);
+							AnimeDataSource.editarFavorito(favorito, servidor,this);
 						}
 					}
 				}
 
 			} else {
-				if (source.getAllNotificacion(servidor) == null) {
-					source.agregarNotificacion(lista.get(0), servidor);
+				if (AnimeDataSource.getAllNotificacion(servidor,this) == null) {
+					AnimeDataSource.agregarNotificacion(lista.get(0), servidor,this);
 				} else {
-					Log.e("capitulo", source.getAllNotificacion(servidor));
+					Log.e("capitulo", AnimeDataSource.getAllNotificacion(servidor,this));
 					Capitulo capitulo = new Capitulo();
-					capitulo.setUrl(source.getAllNotificacion(servidor));
+					capitulo.setUrl(AnimeDataSource.getAllNotificacion(servidor,this));
 					int index = lista.indexOf(capitulo);
 					if (index != -1) {
 						List<Capitulo> capitulos = lista.subList(0, index);
@@ -95,7 +94,7 @@ public class AnimeService extends Service {
 						}
 
 					}
-					source.editarNotificacion(lista.get(0), servidor);
+					AnimeDataSource.editarNotificacion(lista.get(0), servidor,this);
 				}
 			}
 		} catch (Exception e) {

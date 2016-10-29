@@ -35,12 +35,10 @@ public class BusquedaActivity extends AppCompatActivity {
     private RelativeLayout relativeLayout;
     private RecyclerView rv;
     private AnimeAdapter animeAdapter;
-    private AnimeDataSource source;
     private TextView emptyView;
     private Toolbar toolbar;
     private boolean end = false;
     private boolean refreshing = false;
-    private boolean mostrarVistos;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -52,8 +50,6 @@ public class BusquedaActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-        mostrarVistos = sharedPref.getBoolean("mostrarVistos", true);
-        source = new AnimeDataSource(this);
         tipoLista = sharedPref.getString("pref_list_view", "grid").toLowerCase();
         pagina = 1;
         relativeLayout = (RelativeLayout) findViewById(R.id.contenido);
@@ -67,7 +63,7 @@ public class BusquedaActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (ServidorUtil.verificaConexion(BusquedaActivity.this)) {
-            animeAdapter = ServidorUtil.getAnimeAdapter(tipoLista, source, server, false, mostrarVistos, this);
+            animeAdapter = ServidorUtil.getAnimeAdapter(tipoLista,server, this);
             rv.setLayoutManager(ServidorUtil.getlayout(tipoLista, this));
             rv.setAdapter(animeAdapter);
             rv.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -174,25 +170,21 @@ public class BusquedaActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        source.open();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        source.close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        source.open();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        source.close();
     }
 
 }

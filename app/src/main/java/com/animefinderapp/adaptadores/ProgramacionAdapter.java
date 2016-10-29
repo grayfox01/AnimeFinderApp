@@ -28,14 +28,12 @@ public class ProgramacionAdapter extends RecyclerView.Adapter<ProgramacionAdapte
 	private ArrayList<Capitulo> capitulos;
 	private Context context;
 	private int resourse;
-	private AnimeDataSource source;
 	private String server;
 
-	public ProgramacionAdapter(Context context,AnimeDataSource source, int resource, ArrayList<Capitulo> programacion, String server) {
+	public ProgramacionAdapter(Context context, int resource, ArrayList<Capitulo> programacion, String server) {
 		this.context = context;
 		this.resourse = resource;
 		this.capitulos = programacion;
-		this.source = source;
 		this.server = server;
 	}
 
@@ -65,10 +63,10 @@ public class ProgramacionAdapter extends RecyclerView.Adapter<ProgramacionAdapte
 			@Override
 			public void onClick(View v) {
 				if (ServidorUtil.verificaConexion(context)) {
-					if (!source.getAllCapitulosVistos(server, capitulo.getAnime().getUrl())
+					if (!AnimeDataSource.getAllCapitulosVistos(server, capitulo.getAnime().getUrl(),context)
 							.contains(capitulo.getUrl())) {
-						source.agregarCapitulo(server, capitulo.getAnime().getUrl(), capitulo.getUrl());
-						source.agregarHistorial(capitulo, server);
+						AnimeDataSource.agregarCapitulo(server, capitulo.getAnime().getUrl(), capitulo.getUrl(),context);
+						AnimeDataSource.agregarHistorial(capitulo, server,context);
 					}
 					ServidorUtil.buscarVideos(capitulo, "ver", server, context);
 				} else {
@@ -111,10 +109,10 @@ public class ProgramacionAdapter extends RecyclerView.Adapter<ProgramacionAdapte
 			public void onClick(View v) {
 				try {
 					if (ServidorUtil.verificaConexion(context)) {
-						if (!source.getAllCapitulosVistos(server, capitulo.getAnime().getUrl())
+						if (!AnimeDataSource.getAllCapitulosVistos(server, capitulo.getAnime().getUrl(),context)
 								.contains(capitulo.getUrl())) {
-							source.agregarCapitulo(server, capitulo.getAnime().getUrl(), capitulo.getUrl());
-							source.agregarHistorial(capitulo, server);
+							AnimeDataSource.agregarCapitulo(server, capitulo.getAnime().getUrl(), capitulo.getUrl(),context);
+							AnimeDataSource.agregarHistorial(capitulo, server,context);
 						}
 						ServidorUtil.buscarVideos(capitulo, "descargar", server, context);
 					} else {

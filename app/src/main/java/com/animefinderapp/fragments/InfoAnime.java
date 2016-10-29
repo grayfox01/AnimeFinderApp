@@ -33,7 +33,6 @@ public class InfoAnime extends Fragment {
     private Context context;
     private AnimeFavorito animeFavorito;
     private String server;
-    private AnimeDataSource source;
     private SharedPreferences sharedPref;
 
     public InfoAnime() {
@@ -49,7 +48,6 @@ public class InfoAnime extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getContext();
-            source = (AnimeDataSource) getArguments().get("source");
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
             animeFavorito = new AnimeFavorito();
@@ -66,10 +64,10 @@ public class InfoAnime extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (favorito.isChecked()) {
-                        source.agregarFavorito(animeFavorito, server);
+                        AnimeDataSource.agregarFavorito(animeFavorito, server,context);
                         Snackbar.make(v, "Favorito Agregado", Snackbar.LENGTH_SHORT).show();
                     } else {
-                        source.eliminarFavorito(animeFavorito, server);
+                        AnimeDataSource.eliminarFavorito(animeFavorito, server,context);
                         Snackbar.make(v, "Favorito Eliminado", Snackbar.LENGTH_SHORT).show();
                     }
 
@@ -80,10 +78,10 @@ public class InfoAnime extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (visto.isChecked()) {
-                        source.agregarAnimeVisto(animeFavorito, server);
+                        AnimeDataSource.agregarAnimeVisto(animeFavorito, server,context);
                         Snackbar.make(v, "Anime Agregado", Snackbar.LENGTH_SHORT).show();
                     } else {
-                        source.eliminarAnimeVisto(animeFavorito, server);
+                        AnimeDataSource.eliminarAnimeVisto(animeFavorito, server,context);
                         Snackbar.make(v, "Anime Eliminado", Snackbar.LENGTH_SHORT).show();
                     }
 

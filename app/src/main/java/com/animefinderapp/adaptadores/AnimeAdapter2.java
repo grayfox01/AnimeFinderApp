@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.animefinderapp.R;
 import com.animefinderapp.actividades.AnimeActivity;
 import com.animefinderapp.baseDatos.AnimeDataSource;
+import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.entidades.AnimeFavorito;
 import com.animefinderapp.utilidad.CropSquareTransformationGlide;
 import com.animefinderapp.utilidad.ServidorUtil;
@@ -29,14 +30,12 @@ public class AnimeAdapter2 extends RecyclerView.Adapter<AnimeAdapter2.ViewHolder
 	private Context context;
 	private ArrayList<AnimeFavorito> listaAnimes;
 	private int resourse;
-	private AnimeDataSource source;
 	private String server;
 
-	public AnimeAdapter2(Context context,AnimeDataSource source, int resource, ArrayList<AnimeFavorito> listaAnimes, String server) {
+	public AnimeAdapter2(Context context, int resource, ArrayList<AnimeFavorito> listaAnimes, String server) {
 		this.context = context;
 		this.resourse = resource;
 		this.listaAnimes = listaAnimes;
-		this.source = source;
 		this.server = server;
 	}
 
@@ -80,7 +79,7 @@ public class AnimeAdapter2 extends RecyclerView.Adapter<AnimeAdapter2.ViewHolder
 
 			@Override
 			public boolean onLongClick(View v) {
-				source.eliminarAnimeVisto(listaAnimes.get(posicion), server);
+				AnimeDataSource.eliminarAnimeVisto(listaAnimes.get(posicion), server,context);
 				listaAnimes.remove(posicion);
 				Snackbar.make(v, "Anime Eliminado", Snackbar.LENGTH_SHORT).show();
 				notifyItemRemoved(posicion);

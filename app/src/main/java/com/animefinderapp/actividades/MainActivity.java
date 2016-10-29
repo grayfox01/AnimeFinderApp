@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
-    private AnimeDataSource source;
     private String server;
     private TextView name;
     private TextView email;
@@ -81,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setIcon(R.drawable.side_nav_bar);
-        source= new AnimeDataSource(this);
 
         try {
             drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -103,15 +101,12 @@ public class MainActivity extends AppCompatActivity implements
 
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
-                    Bundle args = new Bundle();
-                    args.putSerializable("source", source);
                     int id = item.getItemId();
                     Fragment fragment = null;
                     switch (id) {
                         case R.id.nav_programacion:
                             if (ServidorUtil.verificaConexion(MainActivity.this)) {
                                 fragment = new Programacion();
-                                fragment.setArguments(args);
                                 getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                                 item.setChecked(true);
                                 getSupportActionBar().setTitle(item.getTitle());
@@ -121,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements
                             break;
                         case R.id.nav_historial:
                             fragment = new Historial();
-                            fragment.setArguments(args);
                             getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                             item.setChecked(true);
                             getSupportActionBar().setTitle(item.getTitle());
@@ -130,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements
                         case R.id.nav_letras:
                             if (ServidorUtil.verificaConexion(MainActivity.this)) {
                                 fragment = new Letras();
-                                fragment.setArguments(args);
                                 getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                                 item.setChecked(true);
                                 getSupportActionBar().setTitle(item.getTitle());
@@ -141,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements
                         case R.id.nav_generos:
                             if (ServidorUtil.verificaConexion(MainActivity.this)) {
                                 fragment = new Generos();
-                                fragment.setArguments(args);
                                 getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                                 item.setChecked(true);
                                 getSupportActionBar().setTitle(item.getTitle());
@@ -151,14 +143,12 @@ public class MainActivity extends AppCompatActivity implements
                             break;
                         case R.id.nav_favoritos:
                             fragment = new Favoritos();
-                            fragment.setArguments(args);
                             getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                             item.setChecked(true);
                             getSupportActionBar().setTitle(item.getTitle());
                             break;
                         case R.id.nav_vistos:
                             fragment = new Vistos();
-                            fragment.setArguments(args);
                             getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                             item.setChecked(true);
                             getSupportActionBar().setTitle(item.getTitle());
@@ -384,13 +374,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        source.open();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        source.open();
     }
 
     @Override
@@ -399,12 +387,11 @@ public class MainActivity extends AppCompatActivity implements
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-source.close();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-source.close();
+
     }
 }

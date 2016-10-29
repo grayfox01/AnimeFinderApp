@@ -32,7 +32,6 @@ public class Programacion extends Fragment {
     private ProgramacionAdapter programacionAdapter;
     private RecyclerView recyclerViewProgramacion;
     private SharedPreferences sharedPref;
-    private AnimeDataSource source;
     private Context context;
 
     public Programacion() {
@@ -50,7 +49,6 @@ public class Programacion extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         try {
             context= getActivity();
-            source = (AnimeDataSource) getArguments().get("source");
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
@@ -61,7 +59,7 @@ public class Programacion extends Fragment {
             }
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayoutProgramacion = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefreshprogramacion);
-            programacionAdapter = ServidorUtil.getProgramacionAdapter(tipoLista,source, server, context);
+            programacionAdapter = ServidorUtil.getProgramacionAdapter(tipoLista, server, context);
             recyclerViewProgramacion = (RecyclerView) view.findViewById(R.id.programacion);
             recyclerViewProgramacion.setHasFixedSize(true);
             recyclerViewProgramacion.setLayoutManager(ServidorUtil.getlayout(tipoLista, context));

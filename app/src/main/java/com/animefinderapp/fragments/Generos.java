@@ -32,15 +32,12 @@ public class Generos extends Fragment {
     private String tipoLista;
     private String server;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private AnimeDataSource source;
     private Context context;
     private boolean refreshing = false;
     private int pagina;
     private boolean end;
     private String[] generoSeleccionado;
-    private boolean ocultarVistos;
     private AnimeAdapter animeGeneroAdapter;
-    private boolean mostrarVistos;
 
 
     public Generos() {
@@ -61,11 +58,9 @@ public class Generos extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         try {
             context = getActivity();
-            source = (AnimeDataSource) getArguments().get("source");
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-            mostrarVistos = sharedPref.getBoolean("mostrarVistos", true);
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
             generosAdapter = ServidorUtil.getGenerosAdapter();
@@ -130,7 +125,7 @@ public class Generos extends Fragment {
                                 ((AppCompatActivity) context).getSupportActionBar().setTitle("Genero:" + genero[1]);
                                 pagina = 1;
                                 end = false;
-                                animeGeneroAdapter = ServidorUtil.getAnimeAdapter(tipoLista, source, server, true, mostrarVistos, context);
+                                animeGeneroAdapter = ServidorUtil.getAnimeAdapter(tipoLista,server, context);
                                 animeGeneroAdapter.removeAll();
                                 recyclerViewGeneros.setAdapter(animeGeneroAdapter);
                                 swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -200,9 +195,6 @@ public class Generos extends Fragment {
             refreshing = false;
             if (s.equals("ok")) {
                 if (!lista.isEmpty()) {
-                    if (ocultarVistos) {
-                        lista.removeAll(source.getAllAnimeVisto(server));
-                    }
                     animeGeneroAdapter.addAll(lista);
                     pagina++;
                 } else {

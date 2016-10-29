@@ -23,7 +23,6 @@ import com.bumptech.glide.Glide;
  */
 
 public class Configuracion extends PreferenceFragment {
-    private AnimeDataSource source;
     private Context context;
     private String server;
     private SharedPreferences sharedPref;
@@ -34,7 +33,6 @@ public class Configuracion extends PreferenceFragment {
         context= getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-        source = (AnimeDataSource) getArguments().get("source");
         addPreferencesFromResource(R.xml.settings);
         Preference buttonExportar = getPreferenceManager().findPreference("exportarButton");
         if (buttonExportar != null) {
@@ -42,7 +40,7 @@ public class Configuracion extends PreferenceFragment {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
 
-                    if (source.exportDB(context) ){
+                    if (AnimeDataSource.exportDB(context) ){
                         Snackbar.make(view, "Importacion exitosa", Snackbar.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(view, "No se pudo importar", Snackbar.LENGTH_SHORT).show();
@@ -74,7 +72,7 @@ public class Configuracion extends PreferenceFragment {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
 
-                    if (source.vaciarHistorial(server)) {
+                    if (AnimeDataSource.vaciarHistorial(server,context)) {
                         Snackbar.make(view, "Historial Eliminado", Snackbar.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(view, "Historial No Eliminado", Snackbar.LENGTH_SHORT).show();
@@ -98,7 +96,7 @@ public class Configuracion extends PreferenceFragment {
                         @Override
                         public void onClick(DialogInterface dialogo1, int id) {
 
-                            if (source.importDB(context)) {
+                            if (AnimeDataSource.importDB(context)) {
                                 Snackbar.make(view, "Importacion exitosa", Snackbar.LENGTH_SHORT).show();
                             } else {
                                 Snackbar.make(view, "No se pudo importar", Snackbar.LENGTH_SHORT).show();
@@ -130,7 +128,7 @@ public class Configuracion extends PreferenceFragment {
                         @Override
                         public void onClick(DialogInterface dialogo1, int id) {
 
-                            if (source.deleteDB(context)) {
+                            if (AnimeDataSource.deleteDB(context)) {
                                 Snackbar.make(view, "Datos Eliminados", Snackbar.LENGTH_SHORT).show();
                             } else {
                                 Snackbar.make(view, "No se eliminaron los datos.", Snackbar.LENGTH_SHORT).show();

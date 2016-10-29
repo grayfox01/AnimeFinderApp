@@ -113,7 +113,7 @@ public class AnimeDataSource implements Serializable {
                 + "PRIMARY KEY (" + TABLA_CAPITULOS_VISTOS.URL_ANIME + "," + TABLA_CAPITULOS_VISTOS.CAPITULO + "))";
     }
 
-    public void agregarFavorito(AnimeFavorito favorito, String servidor, Context context) {
+    public static void agregarFavorito(AnimeFavorito favorito, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -201,7 +201,7 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public void agregarAnimeVisto(AnimeFavorito favorito, String servidor, Context context) {
+    public static void agregarAnimeVisto(AnimeFavorito favorito, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -225,7 +225,7 @@ public class AnimeDataSource implements Serializable {
 
     }
 
-    public void agregarHistorial(Capitulo capitulo, String servidor, Context context) {
+    public static void agregarHistorial(Capitulo capitulo, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -251,7 +251,7 @@ public class AnimeDataSource implements Serializable {
 
     }
 
-    public void agregarNotificacion(Capitulo capitulo, String servidor, Context context) {
+    public static void agregarNotificacion(Capitulo capitulo, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -271,7 +271,7 @@ public class AnimeDataSource implements Serializable {
         } 
     }
 
-    public void editarNotificacion(Capitulo capitulo, String servidor, Context context) {
+    public static void editarNotificacion(Capitulo capitulo, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -290,7 +290,7 @@ public class AnimeDataSource implements Serializable {
         } 
     }
 
-    public void editarFavorito(AnimeFavorito favorito, String servidor, Context context) {
+    public static void editarFavorito(AnimeFavorito favorito, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -310,7 +310,7 @@ public class AnimeDataSource implements Serializable {
         } 
     }
 
-    public void agregarCapitulo(String servidor, String url, String capitulo, Context context) {
+    public static void agregarCapitulo(String servidor, String url, String capitulo, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -331,7 +331,7 @@ public class AnimeDataSource implements Serializable {
 
     }
 
-    public void eliminarFavorito(AnimeFavorito favorito, String servidor, Context context) {
+    public static void eliminarFavorito(AnimeFavorito favorito, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -365,7 +365,7 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public void eliminarCapitulo(String servidor, String url, String capitulo, Context context) {
+    public static void eliminarCapitulo(String servidor, String url, String capitulo, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
@@ -384,7 +384,7 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public void eliminarAnimeVisto(AnimeFavorito favorito, String servidor, Context context) {
+    public static void eliminarAnimeVisto(AnimeFavorito favorito, String servidor, Context context) {
         AnimeDbHelper openHelper = new AnimeDbHelper(context);
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
