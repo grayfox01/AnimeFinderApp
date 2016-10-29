@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,17 +20,21 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 public class AnimeDataSource implements Serializable {
 
@@ -133,12 +138,14 @@ public class AnimeDataSource implements Serializable {
         } finally {
             database.endTransaction();
             database.close();
-        } 
+        }
 
     }
 
     public static void uploadDB(Context context) {
         try {
+            AnimeDbHelper openHelper = new AnimeDbHelper(context);
+            SQLiteDatabase database = openHelper.getWritableDatabase();
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
             ContextWrapper cw = new ContextWrapper(context);
@@ -164,36 +171,46 @@ public class AnimeDataSource implements Serializable {
         }
     }
 
-    public static void downloadDB(Context context) {
+    public static void downloadDB(final Context context) {
         try {
+            AnimeDbHelper openHelper = new AnimeDbHelper(context);
+            SQLiteDatabase database = openHelper.getWritableDatabase();
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
             StorageReference userRef = storageRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("database").child(AnimeDbHelper.DATABASE_NAME);
             userRef.getPath().equals(userRef.getPath());
             final ContextWrapper cw = new ContextWrapper(context);
             final File localFile = File.createTempFile("datoTmp", "db");
-            userRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            userRef.getFile(localFile).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    try {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred());
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    SQLiteDatabase.deleteDatabase(cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME));
-                    File currentDB = cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME);
                     FileChannel source = null;
                     FileChannel destination = null;
+                    File currentDB = cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME);
                     try {
-                        source = new FileInputStream(localFile).getChannel();
-                        destination = new FileOutputStream(currentDB).getChannel();
+                        source = new FileInputStream(currentDB).getChannel();
+                        destination = new FileOutputStream(localFile).getChannel();
                         destination.transferFrom(source, 0, source.size());
                         source.close();
                         destination.close();
                     } catch (IOException e) {
-                        ServidorUtil.appendLog(e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
+                    Toast.makeText(context, "Descarga Fallida", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {
@@ -221,7 +238,7 @@ public class AnimeDataSource implements Serializable {
             database.endTransaction();
             database.close();
             database.close();
-        } 
+        }
 
     }
 
@@ -247,7 +264,7 @@ public class AnimeDataSource implements Serializable {
         } finally {
             database.endTransaction();
             database.close();
-        } 
+        }
 
     }
 
@@ -268,7 +285,7 @@ public class AnimeDataSource implements Serializable {
         } finally {
             database.endTransaction();
             database.close();
-        } 
+        }
     }
 
     public static void editarNotificacion(Capitulo capitulo, String servidor, Context context) {
@@ -287,7 +304,7 @@ public class AnimeDataSource implements Serializable {
         } finally {
             database.endTransaction();
             database.close();
-        } 
+        }
     }
 
     public static void editarFavorito(AnimeFavorito favorito, String servidor, Context context) {
@@ -307,7 +324,7 @@ public class AnimeDataSource implements Serializable {
         } finally {
             database.endTransaction();
             database.close();
-        } 
+        }
     }
 
     public static void agregarCapitulo(String servidor, String url, String capitulo, Context context) {
@@ -315,7 +332,7 @@ public class AnimeDataSource implements Serializable {
         SQLiteDatabase database = openHelper.getWritableDatabase();
         database.beginTransaction();
         try {
-            
+
             ContentValues values = new ContentValues();
             values.put(AnimeDataSource.TABLA_CAPITULOS_VISTOS.URL_ANIME, url);
             values.put(AnimeDataSource.TABLA_CAPITULOS_VISTOS.CAPITULO, capitulo);// Insertando
@@ -588,48 +605,8 @@ public class AnimeDataSource implements Serializable {
     ;
 
 
-    @SuppressWarnings("resource")
-    public static boolean exportDB(Context context) {
-        ContextWrapper cw = new ContextWrapper(context);
-        FileChannel source = null;
-        FileChannel destination = null;
-        String backupPath = Environment.getExternalStorageDirectory().toString() + "/Anime/Backups";
-        File currentDB = cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME);
-        File backupDB = new File(backupPath, AnimeDbHelper.DATABASE_NAME);
-        try {
-            source = new FileInputStream(currentDB).getChannel();
-            destination = new FileOutputStream(backupDB).getChannel();
-            destination.transferFrom(source, 0, source.size());
-            source.close();
-            destination.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
-    @SuppressWarnings("resource")
-    public static boolean importDB(Context context) {
-        ContextWrapper cw = new ContextWrapper(context);
-        FileChannel source = null;
-        FileChannel destination = null;
-        String backupPath = Environment.getExternalStorageDirectory().toString() + "/Anime/Backups";
-        File currentDB = cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME);
-        File backupDB = new File(backupPath, AnimeDbHelper.DATABASE_NAME);
-        try {
-            source = new FileInputStream(backupDB).getChannel();
-            destination = new FileOutputStream(currentDB).getChannel();
-            destination.transferFrom(source, 0, source.size());
-            source.close();
-            destination.close();
-            return true;
-        } catch (IOException e) {
-            ServidorUtil.appendLog(e.getLocalizedMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
+
 
     public static boolean deleteDB(Context context) {
         try {

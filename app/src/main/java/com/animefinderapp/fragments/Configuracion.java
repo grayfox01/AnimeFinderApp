@@ -15,6 +15,7 @@ import android.view.View;
 import com.animefinderapp.R;
 import com.animefinderapp.actividades.ConfiguracionActivity;
 import com.animefinderapp.baseDatos.AnimeDataSource;
+import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.servicios.AnimeService;
 import com.bumptech.glide.Glide;
 
@@ -30,7 +31,7 @@ public class Configuracion extends PreferenceFragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context= getActivity();
+        context = getActivity();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
         addPreferencesFromResource(R.xml.settings);
@@ -39,13 +40,7 @@ public class Configuracion extends PreferenceFragment {
             buttonExportar.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-
-                    if (AnimeDataSource.exportDB(context) ){
-                        Snackbar.make(view, "Importacion exitosa", Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(view, "No se pudo importar", Snackbar.LENGTH_SHORT).show();
-                    }
-                    // new CrearBackup().execute();
+                    AnimeDataSource.uploadDB(context);
                     return true;
                 }
             });
@@ -72,7 +67,7 @@ public class Configuracion extends PreferenceFragment {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
 
-                    if (AnimeDataSource.vaciarHistorial(server,context)) {
+                    if (AnimeDataSource.vaciarHistorial(server, context)) {
                         Snackbar.make(view, "Historial Eliminado", Snackbar.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(view, "Historial No Eliminado", Snackbar.LENGTH_SHORT).show();
@@ -95,13 +90,7 @@ public class Configuracion extends PreferenceFragment {
                     dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogo1, int id) {
-
-                            if (AnimeDataSource.importDB(context)) {
-                                Snackbar.make(view, "Importacion exitosa", Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                Snackbar.make(view, "No se pudo importar", Snackbar.LENGTH_SHORT).show();
-                            }
-                            // new ImportarDatos().execute();
+                            AnimeDataSource.downloadDB(context);
                         }
                     });
                     dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
