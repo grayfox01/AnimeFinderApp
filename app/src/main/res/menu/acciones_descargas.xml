@@ -1,15 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
     <item
         android:id="@+id/verDescarga"
-        android:showAsAction="ifRoom"
         android:title="Ver"
-    />
-     <item
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/eliminarDescarga"
-        android:showAsAction="ifRoom"
         android:title="Eliminar"
-    />
+        app:showAsAction="ifRoom" />
 
 </menu>

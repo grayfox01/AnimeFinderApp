@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:checkableBehavior="single" >
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_programacion"
+            android:checked="true"
             android:icon="@drawable/ic_home_black"
-            android:title="Programacion"
-            android:checked="true" />
+            android:title="Programacion" />
         <item
             android:id="@+id/nav_letras"
             android:icon="@drawable/ic_format_color_text_black"
@@ -43,18 +42,14 @@ xmlns:tools="http://schemas.android.com/tools">
                 android:title="Descargas" />
         </menu>
     </item>
-    
+
     <item android:title="Otros">
         <menu>
-           
+
             <item
                 android:id="@+id/nav_configuracion"
                 android:icon="@drawable/ic_settings_black"
                 android:title="Configuracion" />
-            <item
-                android:id="@+id/nav_cerrar_sesion"
-                android:icon="@drawable/ic_exit_to_app_black"
-                android:title="Cerrar Sesión" />
             <item
                 android:id="@+id/nav_salir"
                 android:icon="@drawable/ic_exit_to_app_black"

@@ -18,6 +18,7 @@ import com.animefinderapp.baseDatos.AnimeDataSource;
 import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.servicios.AnimeService;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by D2 on 24/10/2016.
@@ -40,7 +41,7 @@ public class Configuracion extends PreferenceFragment {
             buttonExportar.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    AnimeDataSource.uploadDB(context);
+                    AnimeDataSource.uploadDB(context, FirebaseAuth.getInstance().getCurrentUser().getUid());
                     return true;
                 }
             });
@@ -90,7 +91,7 @@ public class Configuracion extends PreferenceFragment {
                     dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogo1, int id) {
-                            AnimeDataSource.downloadDB(context);
+                            AnimeDataSource.downloadDB(context, FirebaseAuth.getInstance().getCurrentUser().getUid());
                         }
                     });
                     dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

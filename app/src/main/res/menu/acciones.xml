@@ -1,21 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.jkanime.Main" >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/marcar_desmarcar"
-        android:showAsAction="withText|ifRoom"
         android:title="Marcar/Desmarcar"
-    />
+        app:showAsAction="withText|ifRoom" />
     <item
         android:id="@+id/descargar"
-        android:showAsAction="ifRoom"
         android:title="Descargar"
-    />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/ver"
-        android:showAsAction="ifRoom"
         android:title="Ver"
-    />
+        app:showAsAction="ifRoom" />
 
 </menu>

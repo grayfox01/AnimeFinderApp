@@ -2,6 +2,8 @@ package com.animefinderapp.actividades;
 
 import com.animefinderapp.R;
 import com.animefinderapp.baseDatos.AnimeDataSource;
+import com.animefinderapp.baseDatos.AnimeDbHelper;
+import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.fragments.Favoritos;
 import com.animefinderapp.fragments.Generos;
 import com.animefinderapp.fragments.Historial;
@@ -29,6 +31,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
@@ -57,6 +60,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setIcon(R.drawable.side_nav_bar);
         try {
+            AnimeDbHelper helper= new AnimeDbHelper(this);
             gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
@@ -195,9 +200,6 @@ public class MainActivity extends AppCompatActivity implements
                         case R.id.nav_salir:
                             close();
                             break;
-                        case R.id.nav_cerrar_sesion:
-                            signOut();
-                            break;
                     }
                     drawer.closeDrawer(GravityCompat.START);
                     return true;
@@ -253,6 +255,27 @@ public class MainActivity extends AppCompatActivity implements
             servidor = (ImageView) hView.findViewById(R.id.server_image);
             name = (TextView) hView.findViewById(R.id.username);
             email = (TextView) hView.findViewById(R.id.email);
+            email.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(final View v) {
+                    PopupMenu popup = new PopupMenu(MainActivity.this, v);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.salir:
+                                    signOut();
+                                    return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.inflate(R.menu.user);
+                    popup.show();
+                }
+            });
         } else {
             View hView = navigationView.getHeaderView(0);
             layoutin = (LinearLayout) hView.findViewById(R.id.loguedLayout);
@@ -390,6 +413,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private void signOut() {
         // Firebase sign out
+        drawer.closeDrawer(GravityCompat.START);
+        AnimeDataSource.uploadDB(MainActivity.this,mAuth.getCurrentUser().getUid());
         mAuth.signOut();
 
         // Google sign out
@@ -397,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
-                        Toast.makeText(MainActivity.this, "Sesion Cerrada", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(MainActivity.this.getCurrentFocus(),  "Sesion Cerrada", Snackbar.LENGTH_LONG).show();
                     }
                 });
     }
@@ -467,11 +492,10 @@ public class MainActivity extends AppCompatActivity implements
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }else {
-                            AnimeDataSource.downloadDB(MainActivity.this);
-                            drawer.closeDrawer(GravityCompat.START);
+                            Snackbar.make(MainActivity.this.getCurrentFocus(),  "Authentication failed.", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(MainActivity.this.getCurrentFocus(), "Sesion iniciada", Snackbar.LENGTH_LONG).show();
+                            AnimeDataSource.downloadDB(MainActivity.this,mAuth.getCurrentUser().getUid());
                         }
                         // [START_EXCLUDE]
                         // [END_EXCLUDE]
@@ -482,6 +506,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // [START signin]
     private void signIn() {
+        drawer.closeDrawer(GravityCompat.START);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
