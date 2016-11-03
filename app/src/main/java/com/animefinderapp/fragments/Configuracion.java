@@ -36,12 +36,12 @@ public class Configuracion extends PreferenceFragment {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
         addPreferencesFromResource(R.xml.settings);
-        Preference buttonExportar = getPreferenceManager().findPreference("exportarButton");
+        Preference buttonExportar = getPreferenceManager().findPreference("subir");
         if (buttonExportar != null) {
             buttonExportar.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    AnimeDataSource.uploadDB(context, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    AnimeDataSource.uploadDB(context, FirebaseAuth.getInstance().getCurrentUser());
                     return true;
                 }
             });
@@ -78,7 +78,7 @@ public class Configuracion extends PreferenceFragment {
                 }
             });
         }
-        Preference buttonImportar = getPreferenceManager().findPreference("importarButton");
+        Preference buttonImportar = getPreferenceManager().findPreference("sincronizar");
         if (buttonImportar != null) {
             buttonImportar.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -86,12 +86,12 @@ public class Configuracion extends PreferenceFragment {
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(context);
                     dialogo1.setTitle("Informacion:");
                     dialogo1.setMessage(
-                            "Se remplazaran todos los datos de la aplicacion,los datos anteriores se perderan.\n ¿Desea Continuar?");
+                            "Se remplazaran todos los datos de la aplicacion,los datos anteriores se perderan.\n¿Desea Continuar?");
                     dialogo1.setCancelable(false);
                     dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogo1, int id) {
-                            AnimeDataSource.downloadDB(context, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            AnimeDataSource.downloadDB(context, FirebaseAuth.getInstance().getCurrentUser());
                         }
                     });
                     dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -104,7 +104,7 @@ public class Configuracion extends PreferenceFragment {
                 }
             });
         }
-        Preference buttonBorrar = getPreferenceManager().findPreference("borrarButton");
+        Preference buttonBorrar = getPreferenceManager().findPreference("borrarDatos");
         if (buttonBorrar != null) {
             buttonBorrar.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override

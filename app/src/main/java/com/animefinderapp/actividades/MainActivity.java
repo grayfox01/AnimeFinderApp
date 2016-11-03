@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements
     private void signOut() {
         // Firebase sign out
         drawer.closeDrawer(GravityCompat.START);
-        AnimeDataSource.uploadDB(MainActivity.this,mAuth.getCurrentUser().getUid());
+        AnimeDataSource.uploadDB(MainActivity.this,mAuth.getCurrentUser());
         mAuth.signOut();
 
         // Google sign out
@@ -495,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements
                             Snackbar.make(MainActivity.this.getCurrentFocus(),  "Authentication failed.", Snackbar.LENGTH_LONG).show();
                         } else {
                             Snackbar.make(MainActivity.this.getCurrentFocus(), "Sesion iniciada", Snackbar.LENGTH_LONG).show();
-                            AnimeDataSource.downloadDB(MainActivity.this,mAuth.getCurrentUser().getUid());
+                            AnimeDataSource.downloadDB(MainActivity.this,mAuth.getCurrentUser());
                         }
                         // [START_EXCLUDE]
                         // [END_EXCLUDE]

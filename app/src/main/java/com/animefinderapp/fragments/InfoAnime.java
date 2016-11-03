@@ -33,7 +33,6 @@ public class InfoAnime extends Fragment {
     private CheckBox visto;
     private LinearLayout datos;
     private LinearLayout relacionados;
-    private LinearLayout LinearLayout1;
     private Context context;
     private AnimeFavorito animeFavorito;
     private String server;
@@ -51,10 +50,9 @@ public class InfoAnime extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getContext();
-            animeFavorito= (AnimeFavorito) savedInstanceState.getSerializable("animeFavorito");
+            animeFavorito= (AnimeFavorito) getArguments().getSerializable("animeFavorito");
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-            animeFavorito = new AnimeFavorito();
             imagen = (ImageView) view.findViewById(R.id.imagenAnime);
             titulo = (TextView) view.findViewById(R.id.tituloAnime);
             descripcion = (TextView) view.findViewById(R.id.descripcionAnime);
@@ -62,7 +60,6 @@ public class InfoAnime extends Fragment {
             visto = (CheckBox) view.findViewById(R.id.isVisto);
             datos = (LinearLayout) view.findViewById(R.id.datosAnime);
             relacionados = (LinearLayout) view.findViewById(R.id.relacionadosAnime);
-            LinearLayout1 = (LinearLayout) view.findViewById(R.id.animeInfo);
             titulo.setText(animeFavorito.getAnime().getTitulo());
             Picasso.with(context).load(animeFavorito.getAnime().getImagen()).placeholder(R.drawable.loadimage).into(imagen);
             descripcion.setText(animeFavorito.getAnime().getDescripcion());
@@ -104,7 +101,7 @@ public class InfoAnime extends Fragment {
                 relacionados.addView(relacionadosl);
             }
             favorito.setChecked(AnimeDataSource.getAllFavoritos(server, context).contains(animeFavorito));
-            visto.setChecked(AnimeDataSource.getAllFavoritos(server, context).contains(animeFavorito));
+            visto.setChecked(AnimeDataSource.getAllAnimeVisto(server, context).contains(animeFavorito));
             favorito.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -138,13 +135,4 @@ public class InfoAnime extends Fragment {
         }
         super.onViewCreated(view, savedInstanceState);
     }
-
-
-
-
-
-    public void show() {
-        LinearLayout1.setVisibility(LinearLayout.VISIBLE);
-    }
-
 }

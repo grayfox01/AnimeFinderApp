@@ -34,13 +34,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class AnimeActivity extends AppCompatActivity {
-    private AnimeFavorito animeFavorito;
     private String server;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
-    private InfoAnime infoFragment;
-    private CapitulosAnime capitulosFragment;
     private String url;
     private SharedPreferences sharedPref;
 
@@ -51,20 +48,12 @@ public class AnimeActivity extends AppCompatActivity {
         url = getIntent().getExtras().getString("url");
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().hide();
-        infoFragment = new InfoAnime();
-        capitulosFragment = new CapitulosAnime();
-
         if (ServidorUtil.verificaConexion(this)) {
             new getAnime(url).execute();
         } else {
-            Snackbar.make(toolbar, "Sin conexion", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getCurrentFocus(), "Sin conexion", Snackbar.LENGTH_SHORT).show();
             finish();
         }
-
     }
 
     private void setupViewPager(ViewPager viewPager, AnimeFavorito anime) {
@@ -112,9 +101,7 @@ public class AnimeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
@@ -159,11 +146,14 @@ public class AnimeActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             try {
+                toolbar = (Toolbar) findViewById(R.id.toolbar);
+                setSupportActionBar(toolbar);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle(anime.getTitulo());
                 viewPager = (ViewPager) findViewById(R.id.viewpager);
                 setupViewPager(viewPager, new AnimeFavorito(anime));
                 tabLayout = (TabLayout) findViewById(R.id.tabs);
                 tabLayout.setupWithViewPager(viewPager);
-                getSupportActionBar().setTitle(anime.getTitulo());
             } catch (Exception e) {
                 ServidorUtil.showMensageError(e, toolbar);
                 finish();

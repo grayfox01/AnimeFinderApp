@@ -19,6 +19,7 @@ import com.animefinderapp.utilidad.ServidorUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -150,149 +151,159 @@ public class AnimeDataSource implements Serializable {
 
     }
 
-    public static void uploadDB(final Context context, final String id) {
+    public static void uploadDB(final Context context, final FirebaseUser user) {
         try {
-            final ProgressDialog[] p = {null, null};
-            AnimeDbHelper openHelper = new AnimeDbHelper(context);
-            SQLiteDatabase database = openHelper.getWritableDatabase();
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
-            ContextWrapper cw = new ContextWrapper(context);
-            Uri file = Uri.fromFile(cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME));
-            StorageReference dbRef = storageRef.child("users").child(id).child("database/" + file.getLastPathSegment());
-            UploadTask uploadTask = dbRef.putFile(file);
-            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    try {
+            if (user == null) {
+                Snackbar.make(((Activity) context).getCurrentFocus(), "Inicie sesion para usar esta caracteristica", Snackbar.LENGTH_LONG).show();
+            } else {
+                String id = user.getUid();
+                final ProgressDialog[] p = {null, null};
+                AnimeDbHelper openHelper = new AnimeDbHelper(context);
+                SQLiteDatabase database = openHelper.getWritableDatabase();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
+                ContextWrapper cw = new ContextWrapper(context);
+                Uri file = Uri.fromFile(cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME));
+                StorageReference dbRef = storageRef.child("users").child(id).child("database/" + file.getLastPathSegment());
+                UploadTask uploadTask = dbRef.putFile(file);
+                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        try {
 
-                        long subido = taskSnapshot.getBytesTransferred();
-                        long total = taskSnapshot.getTotalByteCount();
-                        long porcentaje = 100 * subido / total;
-                        if (total != -1) {
-                            if (p[0] == null) {
-                                p[0] = new ProgressDialog(context);
-                                p[0].setMessage("Subiendo Base de datos...");
-                                p[0].setCancelable(false);
-                                p[0].setCanceledOnTouchOutside(false);
-                                p[0].setIndeterminate(false);
-                                p[0].setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                p[0].setMax(100);
-                                p[0].setProgress((int) porcentaje);
-                                p[0].show();
-                            } else {
-                                p[0].setProgress((int) porcentaje);
+                            long subido = taskSnapshot.getBytesTransferred();
+                            long total = taskSnapshot.getTotalByteCount();
+                            long porcentaje = 100 * subido / total;
+                            if (total != -1) {
+                                if (p[0] == null) {
+                                    p[0] = new ProgressDialog(context);
+                                    p[0].setMessage("Subiendo Base de datos...");
+                                    p[0].setCancelable(false);
+                                    p[0].setCanceledOnTouchOutside(false);
+                                    p[0].setIndeterminate(false);
+                                    p[0].setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                    p[0].setMax(100);
+                                    p[0].setProgress((int) porcentaje);
+                                    p[0].show();
+                                } else {
+                                    p[0].setProgress((int) porcentaje);
+                                }
                             }
+                            Log.i("onProgress: ", "total:" + total);
+                            Log.i("onProgress: ", "subido:" + subido);
+                            Log.i("onProgress: ", "porcentaje:" + porcentaje);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        Log.i("onProgress: ", "total:" + total);
-                        Log.i("onProgress: ", "subido:" + subido);
-                        Log.i("onProgress: ", "porcentaje:" + porcentaje);
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    p[0].setMessage("Subida Completada");
-                    p[0].dismiss();
-                    Snackbar.make(((Activity) context).getCurrentFocus(), "Subida Completada", Snackbar.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
-                    if (p[0] != null) {
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        p[0].setMessage("Subida Completada");
                         p[0].dismiss();
+                        Snackbar.make(((Activity) context).getCurrentFocus(), "Subida Completada", Snackbar.LENGTH_LONG).show();
                     }
-                }
-            });
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
+                        if (p[0] != null) {
+                            p[0].dismiss();
+                        }
+                    }
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized static void downloadDB(final Context context, final String id) {
+    public static void downloadDB(final Context context, final FirebaseUser user) {
         try {
-            final ProgressDialog[] p = {null, null};
-            AnimeDbHelper openHelper = new AnimeDbHelper(context);
-            SQLiteDatabase database = openHelper.getWritableDatabase();
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
-            StorageReference userRef = storageRef.child("users").child(id).child("database").child(AnimeDbHelper.DATABASE_NAME);
-            userRef.getPath().equals(userRef.getPath());
-            final ContextWrapper cw = new ContextWrapper(context);
-            final File localFile = File.createTempFile("datoTmp", "db");
-            userRef.getFile(localFile).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    try {
-                        long descargado = taskSnapshot.getBytesTransferred();
-                        long total = taskSnapshot.getTotalByteCount();
-                        long porcentaje = 100 * descargado / total;
-                        if (total != -1) {
-                            if (p[0] == null) {
-                                p[0] = new ProgressDialog(context);
-                                p[0].setMessage("Descargando Base de datos...");
-                                p[0].setCancelable(false);
-                                p[0].setCanceledOnTouchOutside(false);
-                                p[0].setIndeterminate(false);
-                                p[0].setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                p[0].setMax(100);
-                                p[0].setProgress((int) porcentaje);
-                                p[0].show();
-                            } else {
-                                p[0].setProgress((int) porcentaje);
+            if (user == null) {
+                Snackbar.make(((Activity) context).getCurrentFocus(), "Inicie sesion para usar esta caracteristica", Snackbar.LENGTH_LONG).show();
+            } else {
+                String id = user.getUid();
+                final ProgressDialog[] p = {null, null};
+                AnimeDbHelper openHelper = new AnimeDbHelper(context);
+                SQLiteDatabase database = openHelper.getWritableDatabase();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://animefinderapp-3ab06.appspot.com");
+                StorageReference userRef = storageRef.child("users").child(id).child("database").child(AnimeDbHelper.DATABASE_NAME);
+                userRef.getPath().equals(userRef.getPath());
+                final ContextWrapper cw = new ContextWrapper(context);
+                final File localFile = File.createTempFile("datoTmp", "db");
+                userRef.getFile(localFile).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        try {
+                            long descargado = taskSnapshot.getBytesTransferred();
+                            long total = taskSnapshot.getTotalByteCount();
+                            long porcentaje = 100 * descargado / total;
+                            if (total != -1) {
+                                if (p[0] == null) {
+                                    p[0] = new ProgressDialog(context);
+                                    p[0].setMessage("Descargando Base de datos...");
+                                    p[0].setCancelable(false);
+                                    p[0].setCanceledOnTouchOutside(false);
+                                    p[0].setIndeterminate(false);
+                                    p[0].setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                    p[0].setMax(100);
+                                    p[0].setProgress((int) porcentaje);
+                                    p[0].show();
+                                } else {
+                                    p[0].setProgress((int) porcentaje);
+                                }
                             }
+                            Log.i("onProgress: ", "total:" + total);
+                            Log.i("onProgress: ", "descargado:" + descargado);
+                            Log.i("onProgress: ", "porcentaje:" + porcentaje);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        Log.i("onProgress: ", "total:" + total);
-                        Log.i("onProgress: ", "descargado:" + descargado);
-                        Log.i("onProgress: ", "porcentaje:" + porcentaje);
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
-            }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Log.e("onSuccess: ", "Descarga completa");
-                    Log.e("onSuccess: ", "La nueva base de datos descargada tiene:" + taskSnapshot.getBytesTransferred() + " Bytes");
-                    FileChannel source = null;
-                    FileChannel destination = null;
-                    File currentDB = cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME);
-                    Log.e("onSuccess: ", "Se copiara la nueva base de datos a:" + currentDB.getAbsolutePath());
-                    try {
-                        source = new FileInputStream(localFile).getChannel();
-                        destination = new FileOutputStream(currentDB).getChannel();
-                        Long transfered = destination.transferFrom(source, 0, source.size());
-                        Log.e("onSuccess: ", "La nueva base de datos tiene" + transfered);
-                        source.close();
-                        destination.close();
-                        p[0].setMessage("Descarga Completa");
-                        p[0].dismiss();
-                        Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Completa", Snackbar.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Log.e("onSuccess: ", "Descarga completa");
+                        Log.e("onSuccess: ", "La nueva base de datos descargada tiene:" + taskSnapshot.getBytesTransferred() + " Bytes");
+                        FileChannel source = null;
+                        FileChannel destination = null;
+                        File currentDB = cw.getDatabasePath(AnimeDbHelper.DATABASE_NAME);
+                        Log.e("onSuccess: ", "Se copiara la nueva base de datos a:" + currentDB.getAbsolutePath());
+                        try {
+                            source = new FileInputStream(localFile).getChannel();
+                            destination = new FileOutputStream(currentDB).getChannel();
+                            Long transfered = destination.transferFrom(source, 0, source.size());
+                            Log.e("onSuccess: ", "La nueva base de datos tiene" + transfered);
+                            source.close();
+                            destination.close();
+                            p[0].setMessage("Descarga Completa");
+                            p[0].dismiss();
+                            Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Completa", Snackbar.LENGTH_LONG).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    if (exception.getClass().equals(StorageException.class)) {
-                        if (((StorageException) exception).getHttpResultCode() != 404) {
-                            Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        if (exception.getClass().equals(StorageException.class)) {
+                            if (((StorageException) exception).getHttpResultCode() != 404) {
+                                Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
+                            } else {
+                                Snackbar.make(((Activity) context).getCurrentFocus(), "Base de datos no encontrada en el servidor, se subira la base de datos local", Snackbar.LENGTH_LONG).show();
+                                uploadDB(context, user);
+                            }
                         } else {
-                            Snackbar.make(((Activity) context).getCurrentFocus(), "Base de datos no encontrada en el servidor, se subira la base de datos local", Snackbar.LENGTH_LONG).show();
-                            uploadDB(context, id);
+                            Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
                         }
-                    } else {
-                        Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
+                        if (p[0] != null) {
+                            p[0].dismiss();
+                        }
                     }
-                    if (p[0] != null) {
-                        p[0].dismiss();
-                    }
-                }
-            });
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

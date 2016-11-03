@@ -50,7 +50,7 @@ public class CapitulosAnime extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getActivity();
-            animeFavorito= (AnimeFavorito) savedInstanceState.getSerializable("animeFavorito");
+            animeFavorito= (AnimeFavorito) getArguments().getSerializable("animeFavorito");
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
             adapter = new CapitulosAdapter(context, R.layout.lista_capitulos_row, new ArrayList<Capitulo>(), server);

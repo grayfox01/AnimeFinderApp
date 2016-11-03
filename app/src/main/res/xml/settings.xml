@@ -22,6 +22,7 @@
             android:title="@string/pref_list_view_titulo" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Notificaciones" >
+
         <CheckBoxPreference
             android:key="notificarcheckbox"
             android:defaultValue="false"
@@ -35,5 +36,24 @@
             android:summary="Tipos de notificaciones"
             android:defaultValue="programacion"
             android:title="Tipos" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Datos Servidor">
+        <Preference android:title="Sincronizar"
+            android:key="sincronizar"
+            android:summary="Descargar datos de servidor"/>
+        <Preference android:title="Subir"
+            android:key="subir"
+            android:summary="Subir datos a servidor"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Datos Aplicacion">
+        <Preference android:title="Borrar datos"
+            android:key="borrarDatos"
+            android:summary="Borrar datos aplicacion"/>
+        <Preference android:title="Borrar Historial"
+            android:key="borrarHistorial"
+            android:summary="Eliminar historial de capitulos vistos"/>
+        <Preference android:title="Borrar Cache"
+            android:key="borrarCache"
+            android:summary="Eliminar imagenes de la memoria"/>
     </PreferenceCategory>
 </PreferenceScreen>
