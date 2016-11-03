@@ -1,12 +1,16 @@
 package com.animefinderapp.fragments;
 
 import com.animefinderapp.R;
+import com.animefinderapp.actividades.AnimeActivity;
 import com.animefinderapp.baseDatos.AnimeDataSource;
+import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.entidades.AnimeFavorito;
+import com.animefinderapp.entidades.Relacionado;
 import com.animefinderapp.utilidad.ServidorUtil;
 import com.squareup.picasso.Picasso;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,7 +40,6 @@ public class InfoAnime extends Fragment {
     private SharedPreferences sharedPref;
 
     public InfoAnime() {
-
     }
 
     @Override
@@ -48,6 +51,7 @@ public class InfoAnime extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getContext();
+            animeFavorito= (AnimeFavorito) savedInstanceState.getSerializable("animeFavorito");
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
             animeFavorito = new AnimeFavorito();
@@ -59,6 +63,48 @@ public class InfoAnime extends Fragment {
             datos = (LinearLayout) view.findViewById(R.id.datosAnime);
             relacionados = (LinearLayout) view.findViewById(R.id.relacionadosAnime);
             LinearLayout1 = (LinearLayout) view.findViewById(R.id.animeInfo);
+            titulo.setText(animeFavorito.getAnime().getTitulo());
+            Picasso.with(context).load(animeFavorito.getAnime().getImagen()).placeholder(R.drawable.loadimage).into(imagen);
+            descripcion.setText(animeFavorito.getAnime().getDescripcion());
+            LinearLayout datosl = new LinearLayout(context);
+            datosl.setOrientation(LinearLayout.VERTICAL);
+            for (String dato : animeFavorito.getAnime().getDatos()) {
+                TextView datos = new TextView(context);
+                datos.setText(dato);
+                datosl.addView(datos);
+            }
+            datos.addView(datosl);
+            LinearLayout relacionadosl = new LinearLayout(context);
+            relacionadosl.setOrientation(LinearLayout.VERTICAL);
+            for (final Relacionado relacionados : animeFavorito.getAnime().getRelacionados()) {
+                LinearLayout relacionado = new LinearLayout(context);
+                TextView tipo = new TextView(context);
+                tipo.setText(relacionados.getTipo());
+                TextView nombre = new TextView(context);
+                nombre.setText(relacionados.getAnime().getTitulo());
+                nombre.setTextColor(getResources().getColor(R.color.colorPrimary));
+                nombre.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(context, AnimeActivity.class);
+                        i.putExtra("url", relacionados.getAnime().getUrl());
+                        context.startActivity(i);
+                    }
+                });
+                relacionado.addView(tipo);
+                relacionado.addView(nombre);
+                relacionadosl.addView(relacionado);
+            }
+            if (relacionadosl.getChildCount() == 0) {
+                TextView t = new TextView(context);
+                t.setText("No hay informacion");
+                relacionados.addView(t);
+            }else {
+                relacionados.addView(relacionadosl);
+            }
+            favorito.setChecked(AnimeDataSource.getAllFavoritos(server, context).contains(animeFavorito));
+            visto.setChecked(AnimeDataSource.getAllFavoritos(server, context).contains(animeFavorito));
             favorito.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -84,7 +130,6 @@ public class InfoAnime extends Fragment {
                         AnimeDataSource.eliminarAnimeVisto(animeFavorito, server,context);
                         Snackbar.make(v, "Anime Eliminado", Snackbar.LENGTH_SHORT).show();
                     }
-
                 }
             });
         } catch (Exception e) {
@@ -94,39 +139,9 @@ public class InfoAnime extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void setImagen(String url) {
-        Picasso.with(context).load(url).placeholder(R.drawable.loadimage).into(imagen);
-    }
 
-    public void setTitulo(String titulo) {
-        this.titulo.setText(titulo);
-    }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion.setText(descripcion);
-    }
 
-    public void setFavorito(boolean favorito) {
-        this.favorito.setChecked(favorito);
-    }
-
-    public void setVisto(boolean visto) {
-        this.visto.setChecked(visto);
-    }
-
-    public void addDatos(LinearLayout dato) {
-        datos.addView(dato);
-    }
-
-    public void addRelacionados(LinearLayout relacionado) {
-        if (relacionado.getChildCount() == 0) {
-            TextView t = new TextView(context);
-            t.setText("No hay informacion");
-            relacionado.addView(t);
-
-        }
-        relacionados.addView(relacionado);
-    }
 
     public void show() {
         LinearLayout1.setVisibility(LinearLayout.VISIBLE);

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.animefinderapp.R;
 import com.animefinderapp.adaptadores.CapitulosAdapter;
 import com.animefinderapp.baseDatos.AnimeDataSource;
+import com.animefinderapp.entidades.AnimeFavorito;
 import com.animefinderapp.entidades.Capitulo;
 import com.animefinderapp.utilidad.ServidorUtil;
 
@@ -32,7 +33,7 @@ public class CapitulosAnime extends Fragment {
     private RelativeLayout capitulosl;
     private FloatingActionButton buttonSubirBajar;
     private LinearLayoutManager layoutManager;
-
+    private AnimeFavorito animeFavorito;
 
     public CapitulosAnime() {
 
@@ -49,6 +50,7 @@ public class CapitulosAnime extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getActivity();
+            animeFavorito= (AnimeFavorito) savedInstanceState.getSerializable("animeFavorito");
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
             adapter = new CapitulosAdapter(context, R.layout.lista_capitulos_row, new ArrayList<Capitulo>(), server);
@@ -87,8 +89,8 @@ public class CapitulosAnime extends Fragment {
                 }
 
             });
-            this.capitulosl.addView(capitulos);
-
+            capitulosl.addView(capitulos);
+            adapter.addAll(animeFavorito.getAnime().getCapitulos());
         } catch (Exception e) {
             e.printStackTrace();
             ServidorUtil.showMensageError(e, getView());
@@ -96,8 +98,5 @@ public class CapitulosAnime extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void addCapitulos(ArrayList<Capitulo> lista) {
-        adapter.addAll(lista);
-    }
 
 }

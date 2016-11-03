@@ -57,11 +57,7 @@ public class AnimeActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         infoFragment = new InfoAnime();
         capitulosFragment = new CapitulosAnime();
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager, new Anime());
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setVisibility(TabLayout.GONE);
+
         if (ServidorUtil.verificaConexion(this)) {
             new getAnime(url).execute();
         } else {
@@ -71,11 +67,16 @@ public class AnimeActivity extends AppCompatActivity {
 
     }
 
-    private void setupViewPager(ViewPager viewPager, Anime anime) {
+    private void setupViewPager(ViewPager viewPager, AnimeFavorito anime) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(infoFragment, "Informacion");
-        adapter.addFragment(capitulosFragment, "Capitulos");
-        ;
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("animeFavorito", anime);
+        InfoAnime infoAnime= new InfoAnime();
+        infoAnime.setArguments(bundle);
+        CapitulosAnime capitulosAnime= new CapitulosAnime();
+        capitulosAnime.setArguments(bundle);
+        adapter.addFragment(infoAnime, "Informacion");
+        adapter.addFragment(capitulosAnime, "Capitulos");
         viewPager.setAdapter(adapter);
     }
 
@@ -157,51 +158,12 @@ public class AnimeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
             try {
-                infoFragment.setTitulo(anime.getTitulo());
-                infoFragment.setImagen(anime.getImagen());
-                infoFragment.setDescripcion(anime.getDescripcion());
-                LinearLayout datosl = new LinearLayout(AnimeActivity.this);
-                datosl.setOrientation(LinearLayout.VERTICAL);
-                for (String dato : anime.getDatos()) {
-                    TextView datos = new TextView(AnimeActivity.this);
-                    datos.setText(dato);
-                    datosl.addView(datos);
-                }
-                infoFragment.addDatos(datosl);
-                LinearLayout relacionadosl = new LinearLayout(AnimeActivity.this);
-                relacionadosl.setOrientation(LinearLayout.VERTICAL);
-                for (final Relacionado relacionados : anime.getRelacionados()) {
-                    LinearLayout relacionado = new LinearLayout(AnimeActivity.this);
-                    TextView tipo = new TextView(AnimeActivity.this);
-                    tipo.setText(relacionados.getTipo());
-                    TextView nombre = new TextView(AnimeActivity.this);
-                    nombre.setText(relacionados.getAnime().getTitulo());
-                    nombre.setTextColor(getResources().getColor(R.color.colorPrimary));
-                    nombre.setOnClickListener(new OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(AnimeActivity.this, AnimeActivity.class);
-                            i.putExtra("url", relacionados.getAnime().getUrl());
-                            AnimeActivity.this.startActivity(i);
-                        }
-                    });
-                    relacionado.addView(tipo);
-                    relacionado.addView(nombre);
-                    relacionadosl.addView(relacionado);
-                }
-                infoFragment.addRelacionados(relacionadosl);
-                AnimeFavorito a = new AnimeFavorito(anime, null);
-                animeFavorito = a;
-                infoFragment.setFavorito(AnimeDataSource.getAllFavoritos(server, AnimeActivity.this).contains(a));
-                infoFragment.setVisto(AnimeDataSource.getAllFavoritos(server, AnimeActivity.this).contains(a));
-                capitulosFragment.addCapitulos(anime.getCapitulos());
-                infoFragment.show();
-                getSupportActionBar().show();
+                viewPager = (ViewPager) findViewById(R.id.viewpager);
+                setupViewPager(viewPager, new AnimeFavorito(anime));
+                tabLayout = (TabLayout) findViewById(R.id.tabs);
+                tabLayout.setupWithViewPager(viewPager);
                 getSupportActionBar().setTitle(anime.getTitulo());
-                tabLayout.setVisibility(TabLayout.VISIBLE);
             } catch (Exception e) {
                 ServidorUtil.showMensageError(e, toolbar);
                 finish();
