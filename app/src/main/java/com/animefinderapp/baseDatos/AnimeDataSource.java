@@ -206,7 +206,7 @@ public class AnimeDataSource implements Serializable {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(((Activity) context).getCurrentFocus(), "DescargaFragment Fallida", Snackbar.LENGTH_LONG).show();
                         if (p[0] != null) {
                             p[0].dismiss();
                         }
@@ -265,7 +265,7 @@ public class AnimeDataSource implements Serializable {
                 }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        Log.e("onSuccess: ", "Descarga completa");
+                        Log.e("onSuccess: ", "DescargaFragment completa");
                         Log.e("onSuccess: ", "La nueva base de datos descargada tiene:" + taskSnapshot.getBytesTransferred() + " Bytes");
                         FileChannel source = null;
                         FileChannel destination = null;
@@ -278,9 +278,9 @@ public class AnimeDataSource implements Serializable {
                             Log.e("onSuccess: ", "La nueva base de datos tiene" + transfered);
                             source.close();
                             destination.close();
-                            p[0].setMessage("Descarga Completa");
+                            p[0].setMessage("DescargaFragment Completa");
                             p[0].dismiss();
-                            Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Completa", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(((Activity) context).getCurrentFocus(), "DescargaFragment Completa", Snackbar.LENGTH_LONG).show();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -290,13 +290,13 @@ public class AnimeDataSource implements Serializable {
                     public void onFailure(@NonNull Exception exception) {
                         if (exception.getClass().equals(StorageException.class)) {
                             if (((StorageException) exception).getHttpResultCode() != 404) {
-                                Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(((Activity) context).getCurrentFocus(), "DescargaFragment Fallida", Snackbar.LENGTH_LONG).show();
                             } else {
                                 Snackbar.make(((Activity) context).getCurrentFocus(), "Base de datos no encontrada en el servidor, se subira la base de datos local", Snackbar.LENGTH_LONG).show();
                                 uploadDB(context, user);
                             }
                         } else {
-                            Snackbar.make(((Activity) context).getCurrentFocus(), "Descarga Fallida", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(((Activity) context).getCurrentFocus(), "DescargaFragment Fallida", Snackbar.LENGTH_LONG).show();
                         }
                         if (p[0] != null) {
                             p[0].dismiss();

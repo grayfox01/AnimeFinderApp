@@ -47,13 +47,12 @@ public class CapitulosAdapter extends RecyclerView.Adapter<CapitulosAdapter.View
         return viewHolder;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int posicion) {
         final Capitulo capitulo = capitulos.get(posicion);
         viewHolder.titulo.setText(capitulo.getTitulo());
         if (AnimeDataSource.getAllCapitulosVistos(server, capitulo.getAnime().getUrl(), context).contains(capitulos.get(posicion).getUrl())) {
-            viewHolder.titulo.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            viewHolder.titulo.setTextColor(context.getResources().getColor(R.color.material_grey_900));
 
         } else {
             viewHolder.titulo.setTextColor(context.getResources().getColor(R.color.colorPrimary));

@@ -65,7 +65,7 @@ public class Reyanime implements IServidores {
 				Log.e("datosElement", datosElement.text());
 				datos.add("Tipo: " + doc.select("div.conten-box h1 b").text());
 				datos.add("Emitido: " + datosElement.select("span").text());
-				datos.add("Generos: " + datosElement.select("b").text());
+				datos.add("GenerosNombreFragment: " + datosElement.select("b").text());
 				datos.add("Otros nombres: " + datosElement.select("h2").text());
 				anime.setDatos(datos);
 				topicList = doc.select("div.conten-box h1");

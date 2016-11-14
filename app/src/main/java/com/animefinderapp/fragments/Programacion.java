@@ -41,7 +41,7 @@ public class Programacion extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_programacion, container, false);
+        return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
     @Override
@@ -58,9 +58,9 @@ public class Programacion extends Fragment {
                 Snackbar.make(view, "Servicio Iniciado", Snackbar.LENGTH_SHORT).show();
             }
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
-            swipeRefreshLayoutProgramacion = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefreshprogramacion);
+            swipeRefreshLayoutProgramacion = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
             programacionAdapter = ServidorUtil.getProgramacionAdapter(tipoLista, server, context);
-            recyclerViewProgramacion = (RecyclerView) view.findViewById(R.id.programacion);
+            recyclerViewProgramacion = (RecyclerView) view.findViewById(R.id.lista);
             recyclerViewProgramacion.setHasFixedSize(true);
             recyclerViewProgramacion.setLayoutManager(ServidorUtil.getlayout(tipoLista, context));
             recyclerViewProgramacion.setAdapter(programacionAdapter);

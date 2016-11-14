@@ -34,7 +34,7 @@ public class Historial extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_historial, container, false);
+        return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Historial extends Fragment {
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
             historialAdapter = ServidorUtil.getProgramacionAdapter(tipoLista, server, context);
-            recyclerView = (RecyclerView) view.findViewById(R.id.historial);
+            recyclerView = (RecyclerView) view.findViewById(R.id.lista);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(ServidorUtil.getlayout(tipoLista, context));
             recyclerView.setAdapter(historialAdapter);

@@ -1,9 +1,8 @@
 package com.animefinderapp.fragments;
 
 import com.animefinderapp.R;
-import com.animefinderapp.adaptadores.AnimeAdapter2;
+import com.animefinderapp.adaptadores.AnimeVistoAdapter;
 import com.animefinderapp.baseDatos.AnimeDataSource;
-import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.utilidad.ServidorUtil;
 
 import android.content.Context;
@@ -14,20 +13,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 public class Vistos extends Fragment {
     private SharedPreferences sharedPref;
     private String server;
     private String tipoLista;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private AnimeAdapter2 vistosAdapter;
+    private AnimeVistoAdapter vistosAdapter;
     private RecyclerView recyclerView;
-    private TextView totalVistos;
     private Context context;
 
     public Vistos() {
@@ -37,7 +33,7 @@ public class Vistos extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_vistos, container, false);
+        return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
     @Override
@@ -50,8 +46,7 @@ public class Vistos extends Fragment {
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
             vistosAdapter = ServidorUtil.getAnimeAdapter2(tipoLista, server, context);
-            totalVistos = (TextView) view.findViewById(R.id.totalVistos);
-            recyclerView = (RecyclerView) view.findViewById(R.id.vistos);
+            recyclerView = (RecyclerView) view.findViewById(R.id.lista);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(ServidorUtil.getlayout(tipoLista, context));
             recyclerView.setAdapter(vistosAdapter);
@@ -61,37 +56,11 @@ public class Vistos extends Fragment {
                 public void onRefresh() {
                     vistosAdapter.removeAll();
                     vistosAdapter.addAll(AnimeDataSource.getAllAnimeVisto(server,context));
-                    if (vistosAdapter.getItemCount() == 0) {
-                        totalVistos.setVisibility(TextView.GONE);
-                    } else {
-                        totalVistos.setText("Total:" + vistosAdapter.getItemCount());
-                        totalVistos.setVisibility(TextView.VISIBLE);
-                    }
                     swipeRefreshLayout.setRefreshing(false);
                 }
             });
             vistosAdapter.removeAll();
             vistosAdapter.addAll(AnimeDataSource.getAllAnimeVisto(server,context));
-            if (vistosAdapter.getItemCount() == 0) {
-                totalVistos.setVisibility(TextView.GONE);
-            } else {
-                totalVistos.setText("Total:" + vistosAdapter.getItemCount());
-                totalVistos.setVisibility(TextView.VISIBLE);
-            }
-            AdapterDataObserver adapterDataObserver = new AdapterDataObserver() {
-
-                @Override
-                public void onItemRangeRemoved(int positionStart, int itemCount) {
-                    if (vistosAdapter.getItemCount() == 0) {
-                        totalVistos.setVisibility(TextView.GONE);
-                    } else {
-                        totalVistos.setText("Total:" + vistosAdapter.getItemCount());
-                        totalVistos.setVisibility(TextView.VISIBLE);
-                    }
-                    super.onItemRangeChanged(positionStart, itemCount);
-                }
-            };
-            vistosAdapter.registerAdapterDataObserver(adapterDataObserver);
         } catch (Exception e) {
             ServidorUtil.showMensageError(e, getView());
         }

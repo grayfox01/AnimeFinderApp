@@ -6,7 +6,7 @@ android {
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.animefinderapp"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 24
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7

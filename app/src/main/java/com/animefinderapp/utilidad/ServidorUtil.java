@@ -24,10 +24,9 @@ import org.jsoup.nodes.Document;
 
 import com.animefinderapp.R;
 import com.animefinderapp.adaptadores.AnimeAdapter;
-import com.animefinderapp.adaptadores.AnimeAdapter2;
+import com.animefinderapp.adaptadores.AnimeVistoAdapter;
 import com.animefinderapp.adaptadores.GenerosAdapter;
 import com.animefinderapp.adaptadores.ProgramacionAdapter;
-import com.animefinderapp.baseDatos.AnimeDataSource;
 import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.entidades.AnimeFavorito;
 import com.animefinderapp.entidades.Capitulo;
@@ -84,15 +83,15 @@ public class ServidorUtil {
         }
     }
 
-    public static AnimeAdapter2 getAnimeAdapter2(String tipo, String server, Context c) {
+    public static AnimeVistoAdapter getAnimeAdapter2(String tipo, String server, Context c) {
         switch (tipo) {
             case "lista":
-                return new AnimeAdapter2(c, R.layout.lista_anime_layout_list, new ArrayList<AnimeFavorito>(), server);
+                return new AnimeVistoAdapter(c, R.layout.lista_anime_layout_list, new ArrayList<AnimeFavorito>(), server);
 
             case "grid":
-                return new AnimeAdapter2(c, R.layout.lista_anime_layout_grid, new ArrayList<AnimeFavorito>(), server);
+                return new AnimeVistoAdapter(c, R.layout.lista_anime_layout_grid, new ArrayList<AnimeFavorito>(), server);
             default:
-                return new AnimeAdapter2(c, R.layout.lista_anime_layout_list, new ArrayList<AnimeFavorito>(), server);
+                return new AnimeVistoAdapter(c, R.layout.lista_anime_layout_list, new ArrayList<AnimeFavorito>(), server);
         }
     }
 
@@ -550,8 +549,7 @@ public class ServidorUtil {
                             }
                         }
                     }).length > 0) {
-                        Descarga descarga = new Descarga(carpeta.getName(), carpeta.getAbsolutePath(),
-                                getVideosDescarga(context, carpeta));
+                        Descarga descarga = new Descarga(carpeta.getName(), carpeta.getAbsolutePath());
                         listaDescargas.add(descarga);
                     }
                 }
@@ -562,7 +560,7 @@ public class ServidorUtil {
         return listaDescargas;
     }
 
-    private static ArrayList<Video> getVideosDescarga(Context context, File carpeta) {
+    public static ArrayList<Video> getVideosDescarga(Context context, File carpeta) {
         ArrayList<Video> lista = new ArrayList<>();
         for (File video : carpeta.listFiles(new FilenameFilter() {
 

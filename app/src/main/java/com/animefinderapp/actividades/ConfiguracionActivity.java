@@ -1,7 +1,6 @@
 package com.animefinderapp.actividades;
 
 import com.animefinderapp.R;
-import com.animefinderapp.baseDatos.AnimeDataSource;
 import com.animefinderapp.fragments.Configuracion;
 import android.content.Intent;
 import android.os.Bundle;

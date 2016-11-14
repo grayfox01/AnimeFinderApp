@@ -1,6 +1,8 @@
 package com.animefinderapp.entidades;
 
-public class Video {
+import java.io.Serializable;
+
+public class Video  implements Serializable{
 	String fileName;
 	String filepath;
 	String fileType;

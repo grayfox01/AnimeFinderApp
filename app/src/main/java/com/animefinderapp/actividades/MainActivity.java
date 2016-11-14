@@ -3,11 +3,10 @@ package com.animefinderapp.actividades;
 import com.animefinderapp.R;
 import com.animefinderapp.baseDatos.AnimeDataSource;
 import com.animefinderapp.baseDatos.AnimeDbHelper;
-import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.fragments.Favoritos;
-import com.animefinderapp.fragments.Generos;
+import com.animefinderapp.fragments.GenerosNombreFragment;
 import com.animefinderapp.fragments.Historial;
-import com.animefinderapp.fragments.Letras;
+import com.animefinderapp.fragments.LetrasNombreFragment;
 import com.animefinderapp.fragments.Programacion;
 import com.animefinderapp.fragments.Vistos;
 import com.animefinderapp.servicios.AnimeService;
@@ -31,10 +30,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,6 +55,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -99,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setIcon(R.drawable.side_nav_bar);
         try {
+
             AnimeDbHelper helper= new AnimeDbHelper(this);
             gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements
                             break;
                         case R.id.nav_letras:
                             if (ServidorUtil.verificaConexion(MainActivity.this)) {
-                                fragment = new Letras();
+                                fragment = new LetrasNombreFragment();
                                 getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                                 item.setChecked(true);
                                 getSupportActionBar().setTitle(item.getTitle());
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
                             break;
                         case R.id.nav_generos:
                             if (ServidorUtil.verificaConexion(MainActivity.this)) {
-                                fragment = new Generos();
+                                fragment = new GenerosNombreFragment();
                                 getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
                                 item.setChecked(true);
                                 getSupportActionBar().setTitle(item.getTitle());
