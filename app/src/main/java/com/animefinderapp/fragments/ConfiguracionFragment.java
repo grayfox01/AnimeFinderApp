@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Created by D2 on 24/10/2016.
  */
 
-public class Configuracion extends PreferenceFragment {
+public class ConfiguracionFragment extends PreferenceFragment {
     private Context context;
     private String server;
     private SharedPreferences sharedPref;
@@ -69,9 +69,9 @@ public class Configuracion extends PreferenceFragment {
                 public boolean onPreferenceClick(Preference arg0) {
 
                     if (AnimeDataSource.vaciarHistorial(server, context)) {
-                        Snackbar.make(view, "Historial Eliminado", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, "HistorialFragment Eliminado", Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(view, "Historial No Eliminado", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, "HistorialFragment No Eliminado", Snackbar.LENGTH_SHORT).show();
                     }
 
                     return true;

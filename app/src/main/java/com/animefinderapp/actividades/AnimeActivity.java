@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.animefinderapp.R;
-import com.animefinderapp.baseDatos.AnimeDataSource;
 import com.animefinderapp.entidades.Anime;
 import com.animefinderapp.entidades.AnimeFavorito;
-import com.animefinderapp.entidades.Relacionado;
-import com.animefinderapp.fragments.CapitulosAnime;
-import com.animefinderapp.fragments.InfoAnime;
+import com.animefinderapp.fragments.CapitulosAnimeFragment;
+import com.animefinderapp.fragments.InfoAnimeFragment;
 import com.animefinderapp.utilidad.ServidorUtil;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,12 +23,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class AnimeActivity extends AppCompatActivity {
     private String server;
@@ -60,9 +52,9 @@ public class AnimeActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         Bundle bundle = new Bundle();
         bundle.putSerializable("animeFavorito", anime);
-        InfoAnime infoAnime= new InfoAnime();
+        InfoAnimeFragment infoAnime= new InfoAnimeFragment();
         infoAnime.setArguments(bundle);
-        CapitulosAnime capitulosAnime= new CapitulosAnime();
+        CapitulosAnimeFragment capitulosAnime= new CapitulosAnimeFragment();
         capitulosAnime.setArguments(bundle);
         adapter.addFragment(infoAnime, "Informacion");
         adapter.addFragment(capitulosAnime, "Capitulos");

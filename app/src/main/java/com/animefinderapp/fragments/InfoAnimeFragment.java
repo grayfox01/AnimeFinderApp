@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class InfoAnime extends Fragment {
+public class InfoAnimeFragment extends Fragment {
     private ImageView imagen;
     private TextView titulo;
     private TextView descripcion;
@@ -38,7 +38,7 @@ public class InfoAnime extends Fragment {
     private String server;
     private SharedPreferences sharedPref;
 
-    public InfoAnime() {
+    public InfoAnimeFragment() {
     }
 
     @Override

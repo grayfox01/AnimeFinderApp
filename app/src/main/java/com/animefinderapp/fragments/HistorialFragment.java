@@ -1,7 +1,7 @@
 package com.animefinderapp.fragments;
 
 import com.animefinderapp.R;
-import com.animefinderapp.adaptadores.AnimeAdapter;
+import com.animefinderapp.adaptadores.ProgramacionAdapter;
 import com.animefinderapp.baseDatos.AnimeDataSource;
 import com.animefinderapp.utilidad.ServidorUtil;
 
@@ -12,21 +12,25 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Favoritos extends Fragment {
+public class HistorialFragment extends Fragment {
+
+    private ProgramacionAdapter historialAdapter;
     private SharedPreferences sharedPref;
     private String server;
-    private String tipoLista;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private AnimeAdapter favoritoAdapter;
     private RecyclerView recyclerView;
+    private String tipoLista;
     private Context context;
+    private String titulo;
 
-    public Favoritos() {
+    public HistorialFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -38,28 +42,28 @@ public class Favoritos extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
-            context= getActivity();
+            context = getActivity();
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
-            favoritoAdapter = ServidorUtil.getAnimeAdapter(tipoLista,server, context);
+            historialAdapter = ServidorUtil.getProgramacionAdapter(tipoLista, server, context);
             recyclerView = (RecyclerView) view.findViewById(R.id.lista);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(ServidorUtil.getlayout(tipoLista, context));
-            recyclerView.setAdapter(favoritoAdapter);
+            recyclerView.setAdapter(historialAdapter);
             swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 
                 @Override
                 public void onRefresh() {
-                    favoritoAdapter.removeAll();
-                    favoritoAdapter.addAll(AnimeDataSource.getAllFavoritos(server,context));
+                    historialAdapter.removeAll();
+                    historialAdapter.addAll(AnimeDataSource.getHistorial(server, context));
                     swipeRefreshLayout.setRefreshing(false);
                 }
             });
-            favoritoAdapter.removeAll();
-            favoritoAdapter.addAll(AnimeDataSource.getAllFavoritos(server,context));
+            historialAdapter.removeAll();
+            historialAdapter.addAll(AnimeDataSource.getHistorial(server, context));
         } catch (Exception e) {
             ServidorUtil.showMensageError(e, getView());
         }

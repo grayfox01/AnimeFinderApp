@@ -45,7 +45,6 @@ public class DescargaListFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getActivity();
-
             descarga = (Descarga) getArguments().getSerializable("descarga");
             ((DownloadsActivity) (context)).getSupportActionBar().setTitle(descarga.getFileName());
             videos = (RecyclerView) view.findViewById(R.id.lista);

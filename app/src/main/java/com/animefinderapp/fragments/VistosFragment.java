@@ -12,12 +12,13 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Vistos extends Fragment {
+public class VistosFragment extends Fragment {
     private SharedPreferences sharedPref;
     private String server;
     private String tipoLista;
@@ -25,8 +26,9 @@ public class Vistos extends Fragment {
     private AnimeVistoAdapter vistosAdapter;
     private RecyclerView recyclerView;
     private Context context;
+    private String titulo;
 
-    public Vistos() {
+    public VistosFragment() {
         // Required empty public constructor
     }
 

@@ -3,12 +3,12 @@ package com.animefinderapp.actividades;
 import com.animefinderapp.R;
 import com.animefinderapp.baseDatos.AnimeDataSource;
 import com.animefinderapp.baseDatos.AnimeDbHelper;
-import com.animefinderapp.fragments.Favoritos;
+import com.animefinderapp.fragments.FavoritosFragment;
 import com.animefinderapp.fragments.GenerosNombreFragment;
-import com.animefinderapp.fragments.Historial;
+import com.animefinderapp.fragments.HistorialFragment;
 import com.animefinderapp.fragments.LetrasNombreFragment;
-import com.animefinderapp.fragments.Programacion;
-import com.animefinderapp.fragments.Vistos;
+import com.animefinderapp.fragments.ProgramacionFragment;
+import com.animefinderapp.fragments.VistosFragment;
 import com.animefinderapp.servicios.AnimeService;
 import com.animefinderapp.utilidad.CropCircleTransformation;
 import com.animefinderapp.utilidad.ServidorUtil;
@@ -36,6 +36,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -43,6 +45,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -55,13 +58,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.net.URLConnection;
+
+import static android.R.attr.fragment;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
@@ -72,34 +80,27 @@ public class MainActivity extends AppCompatActivity implements
     private TextView email;
     private ImageView imagen;
     private ImageView servidor;
-    private SearchView searchView;
     private DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
     private Intent i;
-    private Toolbar toolbar;
-    private SharedPreferences sharedPref;
     private NavigationView navigationView;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleApiClient mGoogleApiClient;
-    private GoogleSignInOptions gso;
-    private SignInButton signInButton;
-    private RelativeLayout layoutout;
-    private LinearLayout layoutin;
+    private Fragment fragment = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setIcon(R.drawable.side_nav_bar);
         try {
 
-            AnimeDbHelper helper= new AnimeDbHelper(this);
-            gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            AnimeDbHelper helper = new AnimeDbHelper(this);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
                     .build();
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
             drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            toggle = new ActionBarDrawerToggle(this, drawer, R.string.navigation_drawer_open,
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, R.string.navigation_drawer_open,
                     R.string.navigation_drawer_close) {
 
                 public void onDrawerClosed(View view) {
@@ -132,56 +133,24 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
                     int id = item.getItemId();
-                    Fragment fragment = null;
                     switch (id) {
                         case R.id.nav_programacion:
-                            if (ServidorUtil.verificaConexion(MainActivity.this)) {
-                                fragment = new Programacion();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
-                                item.setChecked(true);
-                                getSupportActionBar().setTitle(item.getTitle());
-                            } else {
-                                Snackbar.make(drawer, "Sin conexion", Snackbar.LENGTH_SHORT).show();
-                            }
+                            fragment = new ProgramacionFragment();
                             break;
                         case R.id.nav_historial:
-                            fragment = new Historial();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
-                            item.setChecked(true);
-                            getSupportActionBar().setTitle(item.getTitle());
-
+                            fragment = new HistorialFragment();
                             break;
                         case R.id.nav_letras:
-                            if (ServidorUtil.verificaConexion(MainActivity.this)) {
-                                fragment = new LetrasNombreFragment();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
-                                item.setChecked(true);
-                                getSupportActionBar().setTitle(item.getTitle());
-                            } else {
-                                Snackbar.make(drawer, "Sin conexion", Snackbar.LENGTH_SHORT).show();
-                            }
+                            fragment = new LetrasNombreFragment();
                             break;
                         case R.id.nav_generos:
-                            if (ServidorUtil.verificaConexion(MainActivity.this)) {
-                                fragment = new GenerosNombreFragment();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
-                                item.setChecked(true);
-                                getSupportActionBar().setTitle(item.getTitle());
-                            } else {
-                                Snackbar.make(drawer, "Sin conexion", Snackbar.LENGTH_SHORT).show();
-                            }
+                            fragment = new GenerosNombreFragment();
                             break;
                         case R.id.nav_favoritos:
-                            fragment = new Favoritos();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
-                            item.setChecked(true);
-                            getSupportActionBar().setTitle(item.getTitle());
+                            fragment = new FavoritosFragment();
                             break;
                         case R.id.nav_vistos:
-                            fragment = new Vistos();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
-                            item.setChecked(true);
-                            getSupportActionBar().setTitle(item.getTitle());
+                            fragment = new VistosFragment();
                             break;
                         case R.id.nav_admin_descargas:
                             Intent mView = new Intent();
@@ -200,6 +169,11 @@ public class MainActivity extends AppCompatActivity implements
                             close();
                             break;
                     }
+                    if (fragment != null) {
+                        toolbar.setTitle(item.getTitle());
+                        getSupportFragmentManager().beginTransaction().replace(R.id.contenido, fragment).commit();
+                    }
+
                     drawer.closeDrawer(GravityCompat.START);
                     return true;
                 }
@@ -230,13 +204,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
             };
             PreferenceManager.setDefaultValues(this, R.xml.settings, false);
-            sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
             boolean servicio = sharedPref.getBoolean("notificarcheckbox", false);
             if (servicio && !ServidorUtil.isMyServiceRunning(AnimeService.class, this)) {
                 startService(new Intent(getApplicationContext(), AnimeService.class));
                 Toast.makeText(getBaseContext(), "Servicio Iniciado", Toast.LENGTH_SHORT).show();
             }
+            selectCodec();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -244,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private void setupDrawerHeader(NavigationView navigationView, Boolean isLogued) {
+        RelativeLayout layoutout;
+        LinearLayout layoutin;
         if (isLogued) {
             View hView = navigationView.getHeaderView(0);
             layoutin = (LinearLayout) hView.findViewById(R.id.loguedLayout);
@@ -281,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements
             layoutout = (RelativeLayout) hView.findViewById(R.id.nologuedLayout);
             layoutin.setVisibility(View.GONE);
             layoutout.setVisibility(View.VISIBLE);
-            signInButton = (SignInButton) hView.findViewById(R.id.sign_in_button);
+            SignInButton signInButton = (SignInButton) hView.findViewById(R.id.sign_in_button);
             signInButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -296,7 +273,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+          drawer.closeDrawer(GravityCompat.START);
+        } else {
+        }
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            super.onBackPressed();
         } else {
             close();
         }
@@ -306,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         searchView.setQueryHint("Buscar...");
         searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
@@ -413,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements
     private void signOut() {
         // Firebase sign out
         drawer.closeDrawer(GravityCompat.START);
-        AnimeDataSource.uploadDB(MainActivity.this,mAuth.getCurrentUser());
+        AnimeDataSource.uploadDB(MainActivity.this, mAuth.getCurrentUser());
         mAuth.signOut();
 
         // Google sign out
@@ -421,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
-                        Snackbar.make(MainActivity.this.getCurrentFocus(),  "Sesion Cerrada", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(MainActivity.this.getCurrentFocus(), "Sesion Cerrada", Snackbar.LENGTH_LONG).show();
                     }
                 });
     }
@@ -466,8 +447,6 @@ public class MainActivity extends AppCompatActivity implements
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
-            } else {
-
             }
         }
     }
@@ -491,10 +470,10 @@ public class MainActivity extends AppCompatActivity implements
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Snackbar.make(MainActivity.this.getCurrentFocus(),  "Authentication failed.", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(MainActivity.this.getCurrentFocus(), "Authentication failed.", Snackbar.LENGTH_LONG).show();
                         } else {
                             Snackbar.make(MainActivity.this.getCurrentFocus(), "Sesion iniciada", Snackbar.LENGTH_LONG).show();
-                            AnimeDataSource.downloadDB(MainActivity.this,mAuth.getCurrentUser());
+                            AnimeDataSource.downloadDB(MainActivity.this, mAuth.getCurrentUser());
                         }
                         // [START_EXCLUDE]
                         // [END_EXCLUDE]
@@ -518,5 +497,28 @@ public class MainActivity extends AppCompatActivity implements
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void selectCodec() {
+        int numCodecs = MediaCodecList.getCodecCount();
+        for (int i = 0; i < numCodecs; i++) {
+            MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(i);
+
+            if (!codecInfo.isEncoder()) {
+                continue;
+            }
+
+            String[] types = codecInfo.getSupportedTypes();
+            for (int j = 0; j < types.length; j++) {
+                Log.e("Type:", types[j] );
+            }
+        }
+    }
+
+
+    public static String getMimeType(String fileUrl) {
+
+        String extension = MimeTypeMap.getFileExtensionFromUrl(fileUrl);
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
     }
 }

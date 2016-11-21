@@ -1,5 +1,16 @@
 package com.animefinderapp.fragments;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.animefinderapp.R;
+import com.animefinderapp.adaptadores.AnimeAdapter;
+import com.animefinderapp.adaptadores.LetrasAdapter;
+import com.animefinderapp.baseDatos.AnimeDataSource;
+import com.animefinderapp.entidades.AnimeFavorito;
+import com.animefinderapp.servicios.AnimeService;
+import com.animefinderapp.utilidad.ServidorUtil;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,22 +28,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.animefinderapp.R;
-import com.animefinderapp.adaptadores.AnimeAdapter;
-import com.animefinderapp.adaptadores.LetrasAdapter;
-import com.animefinderapp.entidades.AnimeFavorito;
-import com.animefinderapp.servicios.AnimeService;
-import com.animefinderapp.utilidad.ServidorUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class LetrasAnimeFragment extends Fragment {
 
     private String server;
     private String tipoLista;
     private SwipeRefreshLayout swipeRefreshLayoutLetras;
-    private LetrasAdapter letrasAdapter;
     private AnimeAdapter animeLetraAdapter;
     private RecyclerView recyclerViewLetras;
     private SharedPreferences sharedPref;
@@ -58,54 +58,20 @@ public class LetrasAnimeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         try {
             context= getActivity();
+            letraSeleccionada =  getArguments().getString("letra");
+            ((AppCompatActivity) context).getSupportActionBar().setTitle("Letra:" + letraSeleccionada);
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
-            boolean servicio = sharedPref.getBoolean("notificarcheckbox", false);
-            if (servicio && !ServidorUtil.isMyServiceRunning(AnimeService.class, context)) {
-                context.startService(new Intent(context, AnimeService.class));
-                Snackbar.make(view, "Servicio Iniciado", Snackbar.LENGTH_SHORT).show();
-            }
             tipoLista = sharedPref.getString("pref_list_view", "lista").toLowerCase();
             swipeRefreshLayoutLetras = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
-            letrasAdapter = new LetrasAdapter(R.layout.lista_letras_generos_row_list, new ArrayList<String>());
+            animeLetraAdapter = ServidorUtil.getAnimeAdapter(tipoLista, server, context);
             recyclerViewLetras = (RecyclerView) view.findViewById(R.id.lista);
             recyclerViewLetras.setHasFixedSize(true);
             recyclerViewLetras.setLayoutManager(ServidorUtil.getlayout(tipoLista, context));
-            recyclerViewLetras.setAdapter(letrasAdapter);
-            swipeRefreshLayoutLetras.setOnRefreshListener(new OnRefreshListener() {
-
-                @Override
-                public void onRefresh() {
-                    letrasAdapter.addAll(Arrays.asList(getResources().getStringArray(R.array.items_letras)));
-                    swipeRefreshLayoutLetras.setRefreshing(false);
-                }
-            });
-            letrasAdapter.setOnItemClickListener(new LetrasAdapter.OnItemClickListener() {
-                public void onItemClick(String cadena) {
-                    if (ServidorUtil.verificaConexion(context)) {
-                        letraBusqueda(cadena);
-                    } else {
-                        Snackbar.make(getView(), "No hay conexion a internet", Snackbar.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            letrasAdapter.addAll(Arrays.asList(getResources().getStringArray(R.array.items_letras)));
-
-        } catch (Exception e) {
-            ServidorUtil.showMensageError(e, getView());
-        }
-    }
-
-    private void letraBusqueda(String letra) {
-        try {
-            letraSeleccionada = letra;
+            recyclerViewLetras.setAdapter(animeLetraAdapter);
             pagina = 1;
             end = false;
-            ((AppCompatActivity) context).getSupportActionBar().setTitle("Letra:" + letraSeleccionada);
-            animeLetraAdapter = ServidorUtil.getAnimeAdapter(tipoLista, server, context);
-            animeLetraAdapter.removeAll();
-            recyclerViewLetras.setAdapter(animeLetraAdapter);
             swipeRefreshLayoutLetras.setOnRefreshListener(new OnRefreshListener() {
 
                 @Override
@@ -128,7 +94,6 @@ public class LetrasAnimeFragment extends Fragment {
         } catch (Exception e) {
             ServidorUtil.showMensageError(e, getView());
         }
-
     }
 
     private class BuscarAnimesLetra extends AsyncTask<String, Void, String> {

@@ -24,7 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-public class CapitulosAnime extends Fragment {
+public class CapitulosAnimeFragment extends Fragment {
     private Context context;
     private String server;
     private SharedPreferences sharedPref;
@@ -35,7 +35,7 @@ public class CapitulosAnime extends Fragment {
     private LinearLayoutManager layoutManager;
     private AnimeFavorito animeFavorito;
 
-    public CapitulosAnime() {
+    public CapitulosAnimeFragment() {
 
     }
 

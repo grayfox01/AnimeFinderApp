@@ -24,34 +24,35 @@
         <activity
             android:name=".actividades.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".actividades.AnimeActivity"
             android:label="@string/title_activity_anime"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".actividades.BusquedaActivity"
             android:label="@string/title_activity_busqueda"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".actividades.ConfiguracionActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".actividades.DownloadsActivity"
             android:label="@string/title_activity_downloads"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".actividades.ReproductorActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Reproductor"
+            android:screenOrientation="landscape"/>
 
         <receiver android:name=".servicios.BootCompleteReceiver">
             <intent-filter>
@@ -62,7 +63,7 @@
         <service
             android:name=".servicios.AnimeService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
 
     </application>

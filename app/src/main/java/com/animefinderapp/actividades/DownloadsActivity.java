@@ -51,23 +51,14 @@ public class DownloadsActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                    getSupportFragmentManager().popBackStack();
-                } else {
-                    finish();
-                }
-
+                getSupportFragmentManager().popBackStack();
                 break;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            finish();
-        }
+        super.onBackPressed();
     }
 }

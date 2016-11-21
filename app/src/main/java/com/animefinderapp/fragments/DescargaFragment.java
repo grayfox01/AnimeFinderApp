@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,7 +46,7 @@ public class DescargaFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         try {
             context = getActivity();
-            ((DownloadsActivity) (context)).getSupportActionBar().setTitle(R.string.title_activity_downloads);
+            ((AppCompatActivity) (context)).getSupportActionBar().setTitle(R.string.title_activity_downloads);
             swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipetorefresh);
             descarga= (RecyclerView) view.findViewById(R.id.lista);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -59,8 +60,8 @@ public class DescargaFragment extends Fragment {
                     bundle.putSerializable("descarga", descarga);
                     DescargaListFragment descargaListFragment = new DescargaListFragment();
                     descargaListFragment.setArguments(bundle);
-                    DescargaFragment.this.getFragmentManager().beginTransaction()
-                            .replace(R.id.contenido, descargaListFragment)
+                    ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.contenido, descargaListFragment,"descarga")
                             .addToBackStack(null)
                             .commit();
 

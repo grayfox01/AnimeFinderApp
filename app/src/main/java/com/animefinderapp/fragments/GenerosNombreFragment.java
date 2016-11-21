@@ -38,6 +38,7 @@ public class GenerosNombreFragment extends Fragment {
     private boolean end;
     private String[] generoSeleccionado;
     private AnimeAdapter animeGeneroAdapter;
+    private String titulo;
 
 
     public GenerosNombreFragment() {

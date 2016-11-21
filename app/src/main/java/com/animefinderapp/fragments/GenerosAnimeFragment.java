@@ -37,6 +37,7 @@ public class GenerosAnimeFragment extends Fragment {
     private boolean end;
     private String[] generoSeleccionado;
     private AnimeAdapter animeGeneroAdapter;
+    private String titulo;
 
 
     public GenerosAnimeFragment() {
@@ -57,6 +58,8 @@ public class GenerosAnimeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         try {
             context = getActivity();
+            titulo = getArguments().getString("titulo");
+            ((AppCompatActivity) (context)).getSupportActionBar().setTitle("Genero:"+titulo);
             PreferenceManager.setDefaultValues(context, R.xml.settings, false);
             sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             server = sharedPref.getString("pref_servidor", "AnimeFlv").toLowerCase();
@@ -72,90 +75,13 @@ public class GenerosAnimeFragment extends Fragment {
                 @Override
                 public void onRefresh() {
                     generosAdapter.removeAll();
-                    new BuscarGeneros(server).execute();
+                    new BuscarAnimesGenero(server,titulo).execute();
                 }
             });
             generosAdapter.removeAll();
-            new BuscarGeneros(server).execute();
+            new BuscarAnimesGenero(server,titulo).execute();
         } catch (Exception e) {
             ServidorUtil.showMensageError(e, getView());
-        }
-    }
-
-    private class BuscarGeneros extends AsyncTask<String, Void, String> {
-
-        private ArrayList<String[]> lista;
-        private String server;
-
-        public BuscarGeneros(String server) {
-            this.lista = new ArrayList<>();
-            this.server = server;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            ServidorUtil.refresh(swipeRefreshLayout, true);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                lista = ServidorUtil.buscarGenero(server, context);
-            } catch (Exception e) {
-                ServidorUtil.showMensageError(e, getView());
-
-            }
-
-            return "ok";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            ServidorUtil.refresh(swipeRefreshLayout, false);
-            if (s.equals("ok")) {
-                if (!lista.isEmpty()) {
-                    generosAdapter.addAll(lista);
-                    generosAdapter.setOnItemClickListener(new GenerosAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(String[] genero) {
-                            try {
-                                generoSeleccionado = genero;
-                                ((AppCompatActivity) context).getSupportActionBar().setTitle("Genero:" + genero[1]);
-                                pagina = 1;
-                                end = false;
-                                animeGeneroAdapter = ServidorUtil.getAnimeAdapter(tipoLista,server, context);
-                                animeGeneroAdapter.removeAll();
-                                recyclerViewGeneros.setAdapter(animeGeneroAdapter);
-                                swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-
-                                    @Override
-                                    public void onRefresh() {
-                                        pagina = 1;
-                                        end = false;
-                                        animeGeneroAdapter.removeAll();
-                                        new BuscarAnimesGenero(server, generoSeleccionado[0]).execute();
-
-                                    }
-                                });
-                                recyclerViewGeneros.addOnScrollListener(new OnScrollListener() {
-
-                                    @Override
-                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                        if (!recyclerView.canScrollVertically(1) && !refreshing && !end) {
-                                            new BuscarAnimesGenero(server, generoSeleccionado[0]).execute();
-                                        }
-                                    }
-                                });
-                                new BuscarAnimesGenero(server, generoSeleccionado[0]).execute();
-                            } catch (Exception e) {
-                                Log.e("error", e.getLocalizedMessage());
-                            }
-                        }
-
-                    });
-                }
-            }
         }
     }
 
@@ -202,6 +128,4 @@ public class GenerosAnimeFragment extends Fragment {
             }
         }
     }
-
-
 }

@@ -1,7 +1,7 @@
 package com.animefinderapp.actividades;
 
 import com.animefinderapp.R;
-import com.animefinderapp.fragments.Configuracion;
+import com.animefinderapp.fragments.ConfiguracionFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +11,7 @@ import android.view.MenuItem;
 public class ConfiguracionActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
-    private Configuracion configuracion;
+    private ConfiguracionFragment configuracion;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +19,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        configuracion = new Configuracion();
+        configuracion = new ConfiguracionFragment();
         getFragmentManager().beginTransaction().replace(R.id.contenido, configuracion).commit();
     }
 

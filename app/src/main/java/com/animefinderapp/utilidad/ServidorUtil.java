@@ -23,6 +23,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.animefinderapp.R;
+import com.animefinderapp.actividades.MainActivity;
+import com.animefinderapp.actividades.ReproductorActivity;
 import com.animefinderapp.adaptadores.AnimeAdapter;
 import com.animefinderapp.adaptadores.AnimeVistoAdapter;
 import com.animefinderapp.adaptadores.GenerosAdapter;
@@ -268,10 +270,13 @@ public class ServidorUtil {
 
     public static void invokeReproductorExterno(Context context, String url, String type) {
         Log.e("url", url);
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-        Uri data = Uri.parse(url);
-        intent.setDataAndType(data, type);
-        context.startActivity(intent);
+        //Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+        //Uri data = Uri.parse(url);
+        //intent.setDataAndType(data, type);
+        //context.startActivity(intent);
+        Intent i=new Intent(context,ReproductorActivity.class);
+        i.putExtra("url",url);
+        context.startActivity(i);
     }
 
     public static void appendLog(String text) {

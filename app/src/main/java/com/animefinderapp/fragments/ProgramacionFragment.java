@@ -19,12 +19,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Programacion extends Fragment {
+public class ProgramacionFragment extends Fragment {
 
     private String server;
     private String tipoLista;
@@ -33,8 +34,9 @@ public class Programacion extends Fragment {
     private RecyclerView recyclerViewProgramacion;
     private SharedPreferences sharedPref;
     private Context context;
+    private String titulo;
 
-    public Programacion() {
+    public ProgramacionFragment() {
         // Required empty public constructor
     }
     
