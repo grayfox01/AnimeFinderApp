@@ -39,7 +39,7 @@ dependencies {
     compile 'com.google.guava:guava:19.0'
     compile 'com.jakewharton:process-phoenix:1.1.0'
     compile 'com.android.support:mediarouter-v7:24.2.0'
-    compile 'com.google.android.gms:play-services-cast-framework:9.2.0'
+    compile 'com.google.android.gms:play-services-cast-framework:9.6.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

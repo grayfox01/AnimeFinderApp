@@ -122,52 +122,6 @@ public class AnimeFlv implements IServidores {
 		return anime;
 	}
 
-	public ArrayList<Capitulo> buscarProgramacion(final Context context, final ProgressDialog pDialog) {
-		ArrayList<Capitulo> lista = new ArrayList<Capitulo>();
-		String url;
-		url = "http://www.animeflv.net";
-		try {
-
-			Elements topicList = getProgramacion(context);
-			pDialog.setMax(topicList.size());
-			for (Element topic : topicList) {
-				String imagen = topic.select("img.imglstsr.lazy").attr("src").replace("mini", "portada");
-				String titulo = topic.select("span.tit").text().substring(0,
-						topic.select("span.tit").text().lastIndexOf(" "));
-				String episodio = "Episodio " + topic.select("span.tit").text().substring(
-						topic.select("span.tit").text().trim().lastIndexOf(" "),
-						topic.select("span.tit").text().trim().length());
-				String urlEpisodio = url + topic.select("a").attr("href");
-				String urlAnime = urlEpisodio.replace("/ver", "/anime")
-						.substring(0, urlEpisodio.replace("/ver", "/anime").lastIndexOf("-")).concat(".html");
-				Anime anime = new Anime(urlAnime, imagen, null, titulo, null, null, null);
-				Capitulo animeProgramacion = new Capitulo(anime, episodio, urlEpisodio);
-				Log.e("programacion", urlAnime+"-"+urlEpisodio);
-				if (topic.select("a").attr("href").contains("/ver/")) {
-					lista.add(animeProgramacion);
-				}
-				pDialog.incrementProgressBy(1);
-			}
-
-		} catch (Exception t) {
-			if (t.getClass().equals(SocketTimeoutException.class)) {
-				((Activity) context).runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast toast = Toast.makeText(context, "message", Toast.LENGTH_SHORT);
-						toast.setText("Tiempo de conexion agotado");
-						toast.show();
-					}
-				});
-			} else {
-				t.printStackTrace();
-				Toast.makeText(context, "Error general:\n Revise el log de errores para mas informacion.",
-						Toast.LENGTH_SHORT).show();
-				ServidorUtil.appendLog(t.getMessage());
-			}
-		}
-		return lista;
-	}
 	
 	public ArrayList<Capitulo> buscarProgramacion(final Context context) {
 		ArrayList<Capitulo> lista = new ArrayList<Capitulo>();

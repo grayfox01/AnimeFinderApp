@@ -229,51 +229,6 @@ public class JkanimeCo implements IServidores {
 		return lista;
 	}
 
-	public ArrayList<Capitulo> buscarProgramacion(final Context context, final ProgressDialog pDialog) {
-		ArrayList<Capitulo> lista = new ArrayList<Capitulo>();
-		try {
-
-			Elements topicList = getProgramacion(context);
-			pDialog.setMax(topicList.size());
-			for (Element topic : topicList) {
-				String imagen = null;
-				Pattern p = Pattern.compile("http://.+?\\.jpg");
-				Matcher m = p.matcher(topic.select("div.thumbnail-recent_home").attr("style"));
-				if (m.find()) {
-					imagen = m.group();
-				}
-				String titulo = topic.select("div.bottom p.name").text();
-				String episodios = topic.select("div.bottom p.time").text();
-				String urlEpisodio = topic.select("div.bottom p.name a").attr("href");
-				Response response = Jsoup.connect(urlEpisodio).timeout(3000).ignoreHttpErrors(true)
-						.followRedirects(true).userAgent("Mozilla/5.0").execute();
-				Document doc = Jsoup.parse(response.body());
-				String urlAnime = doc.select("a.anime_title").attr("href");
-				Anime anime = new Anime(urlAnime, imagen, null, titulo, null, null, null);
-				Capitulo animeProgramacion = new Capitulo(anime,episodios, urlEpisodio);
-				lista.add(animeProgramacion);
-				pDialog.incrementProgressBy(1);
-			}
-		} catch (Exception t) {
-			if (t.getClass().equals(SocketTimeoutException.class)) {
-				((Activity) context).runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast toast = Toast.makeText(context, "message", Toast.LENGTH_SHORT);
-						toast.setText("Tiempo de conexion agotado");
-						toast.show();
-					}
-				});
-			} else {
-				t.printStackTrace();
-				Toast.makeText(context, "Error general:\n Revise el log de errores para mas informacion.",
-						Toast.LENGTH_SHORT).show();
-				ServidorUtil.appendLog(t.getMessage());
-			}
-		}
-		return lista;
-	}
-
 	
 	public Elements getProgramacion(final Context context) {
 		Elements programacion = new Elements();

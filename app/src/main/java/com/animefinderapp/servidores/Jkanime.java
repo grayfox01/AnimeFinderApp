@@ -232,44 +232,6 @@ public class Jkanime implements IServidores {
 		return lista;
 	}
 
-	public ArrayList<Capitulo> buscarProgramacion(final Context context, final ProgressDialog pDialog) {
-		ArrayList<Capitulo> lista = new ArrayList<Capitulo>();
-		try {
-
-			Elements topicList = getProgramacion(context);
-			pDialog.setMax(topicList.size());
-			for (Element topic : topicList) {
-				String imagen = topic.select("a.rated_avatar.listpr").select("img").attr("src").replace("thumbnail",
-						"image");
-				String titulo = topic.select("a.rated_title").text();
-				String episodios = topic.select("div.rated_stars").select("span").get(0).text();
-				String urlEpisodio = topic.select("a.rated_title").attr("href");
-				String urlAnime = urlEpisodio.substring(0, urlEpisodio.lastIndexOf("/")).substring(0,
-						urlEpisodio.substring(0, urlEpisodio.lastIndexOf("/")).lastIndexOf("/"))+"/";
-				Anime anime = new Anime(urlAnime, imagen, null, titulo, null, null, null);
-				Capitulo animeProgramacion = new Capitulo(anime, episodios, urlEpisodio);
-				lista.add(animeProgramacion);
-				pDialog.incrementProgressBy(1);
-			}
-		} catch (Exception t) {
-			if (t.getClass().equals(SocketTimeoutException.class)) {
-				((Activity) context).runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast toast = Toast.makeText(context, "message", Toast.LENGTH_SHORT);
-						toast.setText("Tiempo de conexion agotado");
-						toast.show();
-					}
-				});
-			} else {
-				t.printStackTrace();
-				Toast.makeText(context, "Error general:\n Revise el log de errores para mas informacion.",
-						Toast.LENGTH_SHORT).show();
-				ServidorUtil.appendLog(t.getMessage());
-			}
-		}
-		return lista;
-	}
 
 	public Elements getProgramacion(final Context context) {
 		Elements programacion = new Elements();

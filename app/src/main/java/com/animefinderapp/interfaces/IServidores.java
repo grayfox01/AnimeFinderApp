@@ -17,11 +17,8 @@ public interface IServidores {
 	public Anime buscarInfoAnime(String urlAnime,
 			final Context context);
 
-	ArrayList<Relacionado> buscarRelacionados(String url,
+	public ArrayList<Relacionado> buscarRelacionados(String url,
 			final Context context);
-
-	public ArrayList<Capitulo> buscarProgramacion(
-			final Context context, final ProgressDialog pDialog);
 	
 	public ArrayList<Capitulo> buscarProgramacion(
 			final Context context);
